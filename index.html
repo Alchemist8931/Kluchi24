@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ключи24 — посуточная аренда квартир · прототип</title>
+<style>
+:root{
+  --paper:#FAF7F1; --card:#FFFFFF; --ink:#222939; --muted:#6E7480;
+  --amber:#D99114; --amber-deep:#B37410; --amber-soft:#F8ECD2;
+  --pine:#2F7A5F; --pine-soft:#E0F0E8;
+  --sky:#3B6EA8; --sky-soft:#E3EDF8;
+  --clay:#BE4F36; --clay-soft:#F7E3DD;
+  --line:#E8E1D2; --r:10px;
+  --shadow:0 1px 2px rgba(34,41,57,.06),0 6px 18px rgba(34,41,57,.07);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:"SN Pro",-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--paper);color:var(--ink);font-size:15px;line-height:1.55}
+h1,h2,h3{font-weight:800;letter-spacing:-.02em;line-height:1.15}
+button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,select,textarea{font:inherit;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 10px;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--amber);box-shadow:0 0 0 3px var(--amber-soft)}
+a{color:var(--amber-deep)}
+::selection{background:var(--amber-soft)}
+
+/* прототип-панель */
+#proto{position:sticky;top:0;z-index:60;background:var(--ink);color:#EDE8DC;display:flex;align-items:center;gap:10px;padding:7px 16px;font-size:12.5px;flex-wrap:wrap}
+#proto .lbl{opacity:.75}
+#proto .chip{padding:4px 11px;border-radius:99px;border:1px solid rgba(255,255,255,.25);font-size:12.5px}
+#proto .chip:hover{border-color:var(--amber)}
+#proto .chip.on{background:var(--amber);border-color:var(--amber);color:#241B05;font-weight:700}
+
+/* шапка продукта */
+#hdr{position:sticky;top:34px;z-index:50;background:rgba(250,247,241,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.hdr-in{max-width:1140px;margin:0 auto;display:flex;align-items:center;gap:18px;padding:11px 20px}
+.logo{display:flex;align-items:center;gap:9px;font-weight:800;font-size:18px;letter-spacing:-.02em}
+.logo .key{width:28px;height:28px;border-radius:8px;background:var(--amber);display:grid;place-items:center;color:#241B05;font-size:15px}
+.logo small{font-weight:600;color:var(--muted);font-size:12px;letter-spacing:0}
+.hdr-nav{display:flex;gap:4px;margin-left:8px;flex-wrap:wrap}
+.hdr-nav button{padding:7px 12px;border-radius:8px;color:var(--muted);font-weight:600;font-size:14px}
+.hdr-nav button:hover{background:#F1EBDD;color:var(--ink)}
+.hdr-nav button.on{background:var(--ink);color:#fff}
+.hdr-sp{flex:1}
+.bell{position:relative;width:36px;height:36px;border-radius:9px;border:1px solid var(--line);background:#fff;display:grid;place-items:center;font-size:16px}
+.bell .dot{position:absolute;top:6px;right:7px;width:9px;height:9px;border-radius:99px;background:var(--clay);border:2px solid #fff}
+.who{font-size:13px;color:var(--muted);text-align:right;line-height:1.25}
+.who b{color:var(--ink)}
+
+/* кнопки */
+.btn{display:inline-flex;align-items:center;gap:7px;background:var(--amber);color:#241B05;font-weight:700;padding:9px 16px;border-radius:9px;transition:filter .12s}
+.btn:hover{filter:brightness(1.05)}
+.btn.big{padding:12px 22px;font-size:16px}
+.btn.ghost{background:#fff;border:1px solid var(--line);color:var(--ink);font-weight:600}
+.btn.ghost:hover{border-color:var(--amber)}
+.btn.dark{background:var(--ink);color:#fff}
+.btn.danger{background:var(--clay-soft);color:var(--clay);border:1px solid #E5C0B5}
+.btn.ok{background:var(--pine-soft);color:var(--pine);border:1px solid #BCDCCC}
+.btn.sm{padding:5px 11px;font-size:13px;border-radius:7px}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+
+/* каркас */
+.wrap{max-width:1140px;margin:0 auto;padding:22px 20px 70px}
+.grid{display:grid;gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+.card .hd{padding:13px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.card .hd h3{font-size:15.5px}
+.card .bd{padding:15px 16px}
+.hint{color:var(--muted);font-size:13px}
+.kv{display:flex;justify-content:space-between;gap:14px;padding:5px 0;font-size:14px}
+.kv span:first-child{color:var(--muted)}
+.tag{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:99px;font-size:12.5px;font-weight:700}
+.tag.free{background:var(--pine-soft);color:var(--pine)}
+.tag.busy{background:var(--sky-soft);color:var(--sky)}
+.tag.clean{background:var(--amber-soft);color:var(--amber-deep)}
+.tag.fix{background:var(--clay-soft);color:var(--clay)}
+.tag.gray{background:#EFECE3;color:var(--muted)}
+table.t{width:100%;border-collapse:collapse;font-size:13.5px}
+table.t th{color:var(--muted);font-weight:600;text-align:left;padding:7px 9px;border-bottom:1px solid var(--line);white-space:nowrap}
+table.t td{padding:8px 9px;border-bottom:1px solid #F0EBDE;vertical-align:top}
+table.t tr:last-child td{border-bottom:none}
+
+/* лендинг */
+.hero{max-width:1140px;margin:0 auto;padding:52px 20px 30px;display:grid;grid-template-columns:1.05fr .95fr;gap:38px;align-items:center}
+.hero h1{font-size:42px;margin-bottom:14px}
+.hero p.lead{font-size:17px;color:var(--muted);margin-bottom:22px;max-width:46ch}
+.hero-cta{display:flex;gap:11px;flex-wrap:wrap}
+.hero-facts{display:flex;gap:26px;margin-top:26px;flex-wrap:wrap}
+.hero-facts div b{font-size:21px;display:block}
+.hero-facts div span{color:var(--muted);font-size:13px}
+.sect{max-width:1140px;margin:0 auto;padding:34px 20px}
+.sect h2{font-size:27px;margin-bottom:18px}
+.cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.step{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.step .n{width:30px;height:30px;border-radius:9px;background:var(--ink);color:var(--amber);font-weight:800;display:grid;place-items:center;margin-bottom:10px}
+.step h3{font-size:15.5px;margin-bottom:6px}
+.step p{font-size:13.5px;color:var(--muted)}
+footer{border-top:1px solid var(--line);margin-top:30px}
+.foot{max-width:1140px;margin:0 auto;padding:22px 20px;display:flex;justify-content:space-between;gap:16px;color:var(--muted);font-size:13px;flex-wrap:wrap}
+
+/* карта */
+.mapbox{position:relative;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:#F2EFE7}
+.mapbox svg{display:block;width:100%;height:auto}
+.mk{cursor:pointer}
+.mk rect{fill:#fff;stroke:var(--line)}
+.mk text{font-weight:800;font-size:12px;fill:var(--ink)}
+.mk.free rect{stroke:var(--pine);fill:#fff}
+.mk.free circle{fill:var(--pine)}
+.mk.busy{opacity:.55}
+.mk.busy circle{fill:#9AA1AD}
+.mk.sel rect{fill:var(--ink);stroke:var(--ink)}
+.mk.sel text{fill:#fff}
+.map-legend{position:absolute;left:10px;bottom:10px;background:rgba(255,255,255,.93);border:1px solid var(--line);border-radius:8px;padding:7px 11px;font-size:12px;display:flex;gap:13px}
+.map-legend i{display:inline-block;width:9px;height:9px;border-radius:99px;margin-right:5px}
+
+/* квартиры */
+.apt{display:grid;grid-template-columns:120px 1fr auto;gap:14px;padding:13px;border:1px solid var(--line);border-radius:var(--r);background:#fff;align-items:center}
+.apt.sel{border-color:var(--amber);box-shadow:0 0 0 3px var(--amber-soft)}
+.apt.off{opacity:.55}
+.ph{width:120px;height:86px;border-radius:8px;display:grid;place-items:center;font-size:30px;color:#fff;font-weight:800}
+.apt h4{font-size:15.5px}
+.apt .meta{color:var(--muted);font-size:13px;margin-top:3px}
+.apt .price b{font-size:18px}
+.apt .price span{color:var(--muted);font-size:12.5px}
+
+/* панель состояния */
+.board{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}
+.bcard{border:1px solid var(--line);border-radius:var(--r);background:#fff;padding:13px;border-left:4px solid var(--line)}
+.bcard.free{border-left-color:var(--pine)}
+.bcard.busy{border-left-color:var(--sky)}
+.bcard.clean{border-left-color:var(--amber)}
+.bcard.fix{border-left-color:var(--clay)}
+.bcard h4{font-size:14.5px;margin-bottom:4px}
+.bcard .st{font-size:13px;margin:7px 0 4px}
+.bcard .sub{font-size:12.5px;color:var(--muted)}
+
+/* шахматка */
+.chess{overflow:auto}
+.chess table{border-collapse:collapse;font-size:12px;min-width:640px}
+.chess th,.chess td{border:1px solid var(--line);padding:5px 7px;text-align:center;white-space:nowrap}
+.chess th{background:#F5F1E8;color:var(--muted);font-weight:600}
+.chess td.b{background:var(--sky-soft);color:var(--sky);font-weight:700}
+.chess td.p{background:var(--amber-soft);color:var(--amber-deep);font-weight:700}
+.chess td:first-child,.chess th:first-child{text-align:left;position:sticky;left:0;background:#fff}
+
+/* чат */
+.chat{display:flex;flex-direction:column;gap:8px;max-height:330px;overflow:auto;padding:4px 2px}
+.msg{max-width:78%;padding:8px 12px;border-radius:12px;font-size:13.5px}
+.msg small{display:block;font-size:11px;opacity:.65;margin-top:3px}
+.msg.me{align-self:flex-end;background:var(--ink);color:#fff;border-bottom-right-radius:4px}
+.msg.them{align-self:flex-start;background:#F1EDE2;border-bottom-left-radius:4px}
+.chat-in{display:flex;gap:8px;margin-top:10px}
+.chat-in input{flex:1}
+
+/* уведомления */
+#bellDrop{position:absolute;right:0;top:44px;width:330px;background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);z-index:70;max-height:380px;overflow:auto}
+#bellDrop .n{padding:11px 13px;border-bottom:1px solid #F0EBDE;font-size:13px}
+#bellDrop .n small{color:var(--muted);display:block;margin-top:3px}
+#bellDrop .n.unread{background:#FCF7EA}
+
+/* модалки, тосты */
+#modal-root{position:fixed;inset:0;z-index:100;display:none;align-items:flex-start;justify-content:center;background:rgba(30,34,45,.45);overflow:auto;padding:44px 16px}
+#modal-root.open{display:flex}
+.modal{background:#fff;border-radius:14px;max-width:560px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.25);margin-bottom:44px}
+.modal .m-hd{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.modal .m-hd h3{font-size:17px}
+.modal .m-bd{padding:18px 20px}
+.x{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;color:var(--muted)}
+.x:hover{background:#F1EBDD;color:var(--ink)}
+.frow{margin-bottom:12px}
+.frow label{display:block;font-size:13px;color:var(--muted);margin-bottom:5px}
+.frow input,.frow select,.frow textarea{width:100%}
+#toast-root{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:120;display:flex;flex-direction:column;gap:8px;align-items:center}
+.toast{background:var(--ink);color:#fff;padding:10px 18px;border-radius:99px;font-size:13.5px;box-shadow:var(--shadow);animation:tin .2s ease}
+@keyframes tin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* оплата-мок */
+.paybox{border:1px dashed var(--amber);border-radius:var(--r);padding:14px;background:#FDFAF2}
+.paymeth{display:flex;gap:9px;margin:10px 0}
+.paymeth button{flex:1;border:1px solid var(--line);border-radius:9px;padding:10px;background:#fff;font-weight:600;font-size:13.5px}
+.paymeth button.on{border-color:var(--amber);background:var(--amber-soft)}
+.docv{border:1px solid var(--line);border-radius:10px;padding:22px;background:#fff;font-size:13.5px}
+.docv h4{font-size:16px;margin-bottom:2px}
+.docv .sep{border-top:1px dashed var(--line);margin:12px 0}
+
+/* смены */
+.shiftgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+.shiftgrid .d{border:1px solid var(--line);border-radius:9px;padding:9px;background:#fff;text-align:center}
+.shiftgrid .d b{display:block;font-size:12.5px;margin-bottom:6px;color:var(--muted)}
+.shiftgrid select{width:100%;font-size:12.5px;padding:5px}
+.routebar{display:flex;align-items:center;gap:11px;padding:12px 14px;border-radius:var(--r);background:var(--ink);color:#fff;flex-wrap:wrap}
+.routebar .pulse{width:10px;height:10px;border-radius:99px;background:var(--pine);box-shadow:0 0 0 4px rgba(47,122,95,.3)}
+.routebar.off .pulse{background:var(--amber)}
+
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.split{display:grid;grid-template-columns:1.1fr .9fr;gap:16px;align-items:start}
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr;padding-top:32px}
+  .hero h1{font-size:32px}
+  .cols3,.board,.two,.split{grid-template-columns:1fr}
+  .shiftgrid{grid-template-columns:repeat(4,1fr)}
+  .apt{grid-template-columns:88px 1fr}
+  .apt .price{grid-column:2}
+  .ph{width:88px;height:66px;font-size:22px}
+  #hdr{top:0;position:relative}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div id="proto">
+  <span class="lbl">Демо-прототип · роль:</span>
+  <button class="chip" data-r="guest" onclick="setRole('guest')">Гость / лендинг</button>
+  <button class="chip" data-r="client" onclick="setRole('client')">Клиент</button>
+  <button class="chip" data-r="manager" onclick="setRole('manager')">Менеджер</button>
+  <button class="chip" data-r="cleaner" onclick="setRole('cleaner')">Уборщица</button>
+  <button class="chip" data-r="repair" onclick="setRole('repair')">Ремонтник</button>
+  <button class="chip" data-r="admin" onclick="setRole('admin')">Администратор</button>
+</div>
+
+<header id="hdr"><div class="hdr-in" id="hdrIn"></div></header>
+<main id="app"></main>
+<div id="modal-root" onclick="if(event.target===this)closeModal()"></div>
+<div id="toast-root"></div>
+
+<script>
+/* ================= ДАННЫЕ ================= */
+const TODAY = new Date(); TODAY.setHours(0,0,0,0);
+const iso = d => d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const addD = (d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x;};
+const P = s => {const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d);};
+const fmtD = s => {const d=P(s);return d.getDate().toString().padStart(2,'0')+'.'+(d.getMonth()+1).toString().padStart(2,'0');};
+const fmtDY = s => fmtD(s)+'.'+P(s).getFullYear();
+const RUB = n => n.toLocaleString('ru-RU')+' ₽';
+const nights=(a,b)=>Math.round((P(b)-P(a))/864e5);
+const DOW=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+const nowT=()=>new Date().toTimeString().slice(0,5);
+const dow1=d=>((d.getDay()+6)%7)+1; // 1=Пн … 7=Вс
+
+const DB = {
+  users:{
+    admin:{name:'Игорь Алимпиев', role:'Администратор', phone:'+7 912 000-10-10'},
+    m1:{name:'Марина Ковалёва', role:'Менеджер', phone:'+7 902 111-22-33'},
+    m2:{name:'Олег Дементьев', role:'Менеджер', phone:'+7 902 444-55-66'},
+    cl1:{name:'Тамара Ивановна', role:'Уборщица', phone:'+7 908 700-11-22'},
+    cl2:{name:'Светлана Юрьевна', role:'Уборщица', phone:'+7 908 700-33-44'},
+    rp1:{name:'Виктор Санин', role:'Ремонтник', phone:'+7 904 200-55-66'},
+    cli:{name:'Дмитрий Соколов', role:'Клиент', phone:'+7 912 345-67-89', email:'d.sokolov@mail.ru'}
+  },
+  settings:{
+    city:'Екатеринбург', mainPhone:'+7 343 290-00-24',
+    workFrom:'09:00', workTo:'21:00',
+    // смены: день недели -> менеджер
+    days:{1:'m1',2:'m2',3:'m1',4:'m2',5:'m1',6:'m2',7:'m1'}
+  },
+  apartments:[
+    {id:1, addr:'ул. Вайнера, 21', rooms:'1-комн · 38 м² · 5/9 эт', price:2900, dep:3000, x:252, y:248, g:'linear-gradient(135deg,#8A6E4B,#C9A96E)', ic:'🛋'},
+    {id:2, addr:'ул. Малышева, 71', rooms:'2-комн · 54 м² · 7/12 эт', price:3900, dep:5000, x:338, y:226, g:'linear-gradient(135deg,#41608C,#7C9BC4)', ic:'🛏'},
+    {id:3, addr:'просп. Ленина, 40', rooms:'Студия · 29 м² · 3/5 эт', price:2500, dep:3000, x:300, y:178, g:'linear-gradient(135deg,#5A7A6A,#93B8A4)', ic:'🏙'},
+    {id:4, addr:'ул. 8 Марта, 46', rooms:'2-комн · 58 м² · 14/25 эт', price:4200, dep:5000, x:272, y:302, g:'linear-gradient(135deg,#7A5A78,#B08CAE)', ic:'🌆'},
+    {id:5, addr:'ул. Радищева, 18', rooms:'1-комн · 41 м² · 9/16 эт', price:3100, dep:3000, x:218, y:282, g:'linear-gradient(135deg,#93683E,#D2A46B)', ic:'🛋'},
+    {id:6, addr:'ул. Хохрякова, 74', rooms:'3-комн · 76 м² · 4/10 эт', price:5500, dep:7000, x:238, y:334, g:'linear-gradient(135deg,#4E5A6E,#8B99AE)', ic:'🏠'}
+  ],
+  bookings:[
+    {id:100, apt:1, from:iso(addD(TODAY,-9)), to:iso(addD(TODAY,-7)), client:'cli', status:'done',
+     dep:{amount:3000,status:'returned',deductions:[],surcharges:[]}},
+    {id:101, apt:2, from:iso(addD(TODAY,-2)), to:iso(TODAY), client:'cli', status:'paid',
+     dep:{amount:5000,status:'held',deductions:[],surcharges:[]}},
+    {id:102, apt:4, from:iso(TODAY), to:iso(addD(TODAY,2)), client:null, guest:'Анна Березина · +7 963 210-44-55', status:'paid',
+     dep:{amount:5000,status:'held',deductions:[],surcharges:[]}},
+    {id:103, apt:3, from:iso(addD(TODAY,1)), to:iso(addD(TODAY,4)), client:null, guest:'Павел Гущин · +7 922 587-13-70', status:'pending',
+     dep:{amount:3000,status:'none',deductions:[],surcharges:[]}}
+  ],
+  cleanTasks:[
+    {id:1, apt:2, type:'После выезда', due:'сегодня до 14:00', status:'new', by:null, seenAt:null, doneAt:null, photos:0, booking:101},
+    {id:2, apt:4, type:'Подготовка к заезду', due:'вчера до 13:00', status:'done', by:'cl2', seenAt:'вчера 09:40', doneAt:'вчера 12:15', photos:4, booking:102}
+  ],
+  repairs:[
+    {id:1, apt:6, desc:'Течёт смеситель на кухне, требуется замена картриджа', status:'in-progress', by:'rp1', cost:null, block:true, created:'вчера 18:20'}
+  ],
+  calls:[
+    {id:1, t:'07:31', num:'+7 950 118-24-60', to:'Администратор (нерабочее время)', st:'Принят · 1:12', note:'Вопрос о раннем заезде'},
+    {id:2, t:'09:12', num:'+7 922 587-13-70', to:'Марина Ковалёва', st:'Принят · 2:40', note:'Бронь: Ленина 40, '+fmtD(iso(addD(TODAY,1)))+'–'+fmtD(iso(addD(TODAY,4))), booking:103},
+    {id:3, t:'10:05', num:'+7 909 331-90-12', to:'Марина Ковалёва', st:'Пропущен', note:'Перезвонить'}
+  ],
+  payments:[
+    {id:1, d:fmtDY(iso(addD(TODAY,-9))), type:'Оплата брони №100', amount:8800, method:'Карта · ЮKassa', dir:'+'},
+    {id:2, d:fmtDY(iso(addD(TODAY,-7))), type:'Возврат залога №100', amount:3000, method:'Карта · ЮKassa', dir:'−'},
+    {id:3, d:fmtDY(iso(addD(TODAY,-2))), type:'Оплата брони №101', amount:12800, method:'СБП · ЮKassa', dir:'+'},
+    {id:4, d:fmtDY(iso(TODAY)), type:'Оплата брони №102', amount:13400, method:'Карта · ЮKassa', dir:'+'}
+  ],
+  docs:[
+    {id:1, booking:100, type:'Чек', title:'Кассовый чек №0341 · оплата брони №100', d:fmtDY(iso(addD(TODAY,-9))), sum:8800},
+    {id:2, booking:100, type:'Акт', title:'Акт оказанных услуг №100', d:fmtDY(iso(addD(TODAY,-7))), sum:5800},
+    {id:3, booking:100, type:'Чек', title:'Чек возврата №0347 · залог по брони №100', d:fmtDY(iso(addD(TODAY,-7))), sum:3000},
+    {id:4, booking:101, type:'Чек', title:'Кассовый чек №0352 · оплата брони №101', d:fmtDY(iso(addD(TODAY,-2))), sum:12800}
+  ],
+  chats:{
+    101:[
+      {from:'staff', name:'Марина (менеджер)', text:'Дмитрий, добрый день! Напоминаю: выезд сегодня до 12:00. Ключи оставьте в боксе у двери, код тот же.', t:'09:05'},
+      {from:'client', name:'Дмитрий', text:'Добрый! Понял, выеду к 11:30. Когда вернётся залог?', t:'09:11'},
+      {from:'staff', name:'Марина (менеджер)', text:'После проверки квартиры уборщицей — обычно в течение 2–3 часов после выезда.', t:'09:14'}
+    ]
+  },
+  notifs:[
+    {to:'admin', text:'Сегодня выезд из кв. Малышева, 71 (бронь №101). Создана задача уборки.', t:'08:00', unread:true},
+    {to:'cleaner', text:'Новая задача: уборка после выезда — Малышева, 71, сегодня до 14:00.', t:'08:00', unread:true},
+    {to:'client', text:'Чек по брони №101 доступен в разделе «Документы».', t:fmtD(iso(addD(TODAY,-2)))+' 14:22', unread:false},
+    {to:'manager', text:'Бронь №103 (Ленина, 40) ожидает оплаты гостем.', t:'09:15', unread:true}
+  ],
+  seq:{booking:104, doc:5, pay:5, task:3, call:4}
+};
+
+/* ================= СОСТОЯНИЕ ================= */
+const S = {
+  role:'guest',
+  clientTab:'search', managerTab:'shift', adminTab:'board',
+  search:{from:iso(addD(TODAY,1)), to:iso(addD(TODAY,3))},
+  selApt:null, payMethod:'card', bellOpen:false
+};
+
+/* ================= ХЕЛПЕРЫ ================= */
+const apt = id => DB.apartments.find(a=>a.id===id);
+const bk = id => DB.bookings.find(b=>b.id===id);
+const clientName = b => b.client ? DB.users[b.client].name : (b.guest||'Гость');
+function overlap(a1,a2,b1,b2){ return P(a1) < P(b2) && P(b1) < P(a2); }
+function isFree(aptId, from, to){
+  if(DB.repairs.some(r=>r.apt===aptId && r.block && r.status!=='done')) return false;
+  return !DB.bookings.some(b=>b.apt===aptId && (b.status==='paid'||b.status==='pending') && overlap(from,to,b.from,b.to));
+}
+function notify(to,text){ DB.notifs.unshift({to,text,t:nowT(),unread:true}); }
+function chatPush(bid, from, name, text){
+  (DB.chats[bid]=DB.chats[bid]||[]).push({from,name,text,t:nowT()});
+}
+function toast(msg){
+  const t=document.createElement('div'); t.className='toast'; t.textContent=msg;
+  document.getElementById('toast-root').appendChild(t);
+  setTimeout(()=>t.remove(),3200);
+}
+function roleNotifKey(){ return {client:'client',manager:'manager',cleaner:'cleaner',repair:'repair',admin:'admin'}[S.role]; }
+
+/* маршрутизация звонков */
+function routeFor(dayIdx, time){ // dayIdx 1..7, time 'HH:MM'
+  const s=DB.settings;
+  const inWork = time>=s.workFrom && time<s.workTo;
+  const mid = s.days[dayIdx];
+  if(inWork && mid) return {who:DB.users[mid].name+' — менеджер', phone:DB.users[mid].phone, work:true, mid};
+  return {who:DB.users.admin.name+' — администратор', phone:DB.users.admin.phone, work:false, mid:null};
+}
+function routeNow(){ return routeFor(dow1(new Date()), nowT()); }
+
+/* состояние квартиры для панели */
+function aptState(a){
+  const rep=DB.repairs.find(r=>r.apt===a.id && r.status!=='done');
+  if(rep) return {cls:'fix', tag:'<span class="tag fix">Ремонт</span>', line:rep.desc, sub:'Исполнитель: '+(rep.by?DB.users[rep.by].name:'не назначен')};
+  const act=DB.bookings.find(b=>b.apt===a.id && b.status==='paid' && P(b.from)<=TODAY && P(b.to)>TODAY);
+  if(act) return {cls:'busy', tag:'<span class="tag busy">Занята</span>', line:'Гость: '+clientName(act), sub:'Выезд '+fmtD(act.to)+' до 12:00 · бронь №'+act.id};
+  const ct=DB.cleanTasks.find(t=>t.apt===a.id && t.status!=='done');
+  if(ct){
+    const seen = ct.status==='new' ? '<b style="color:var(--clay)">уборщица ещё не увидела ⚠</b>'
+      : ct.status==='seen' ? 'приняла: '+DB.users[ct.by].name+' ✓'
+      : 'убирает: '+DB.users[ct.by].name+' 🧹';
+    return {cls:'clean', tag:'<span class="tag clean">Ждёт уборки</span>', line:ct.type+' · '+ct.due, sub:'Статус: '+seen};
+  }
+  const next=DB.bookings.filter(b=>b.apt===a.id && b.status==='paid' && P(b.from)>TODAY).sort((x,y)=>P(x.from)-P(y.from))[0];
+  return {cls:'free', tag:'<span class="tag free">Свободна</span>', line:'Готова к заселению', sub:next?('Ближайший заезд '+fmtD(next.from)):'Броней нет'};
+}
+
+/* ================= РОУТЕР ================= */
+function setRole(r){ S.role=r; S.bellOpen=false; render(); window.scrollTo(0,0); }
+function setTab(g,v){ S[g]=v; render(); }
+function render(){
+  document.querySelectorAll('#proto .chip').forEach(c=>c.classList.toggle('on',c.dataset.r===S.role));
+  renderHeader();
+  const app=document.getElementById('app');
+  app.innerHTML = {guest:vLanding,client:vClient,manager:vManager,cleaner:vCleaner,repair:vRepair,admin:vAdmin}[S.role]();
+}
+
+function renderHeader(){
+  const h=document.getElementById('hdrIn');
+  const logo=`<div class="logo"><span class="key">🔑</span><span>Ключи24 <small>· ${DB.settings.city}</small></span></div>`;
+  let nav='', who='';
+  const navBtn=(g,v,l)=>`<button class="${S[g]===v?'on':''}" onclick="setTab('${g}','${v}')">${l}</button>`;
+  if(S.role==='guest'){
+    nav=`<nav class="hdr-nav"><button onclick="document.getElementById('about').scrollIntoView()">О нас</button><button onclick="document.getElementById('how').scrollIntoView()">Как заселиться</button><button onclick="document.getElementById('docs4b').scrollIntoView()">Командировочным</button></nav>`;
+    who=`<button class="btn ghost" onclick="openAuth('in')">Войти</button><button class="btn" onclick="openAuth('up')">Регистрация</button>`;
+  } else {
+    if(S.role==='client') nav=`<nav class="hdr-nav">${navBtn('clientTab','search','Подбор квартиры')}${navBtn('clientTab','my','Мои бронирования')}${navBtn('clientTab','docs','Документы')}</nav>`;
+    if(S.role==='manager') nav=`<nav class="hdr-nav">${navBtn('managerTab','shift','Смена и звонки')}${navBtn('managerTab','req','Брони и шахматка')}${navBtn('managerTab','chats','Чаты')}</nav>`;
+    if(S.role==='admin') nav=`<nav class="hdr-nav">${navBtn('adminTab','board','Состояние квартир')}${navBtn('adminTab','tel','Телефония и смены')}${navBtn('adminTab','dep','Брони и залоги')}${navBtn('adminTab','pay','Платежи')}${navBtn('adminTab','docs','Документы')}${navBtn('adminTab','team','Команда')}</nav>`;
+    const u = {client:DB.users.cli, manager:DB.users.m1, cleaner:DB.users.cl1, repair:DB.users.rp1, admin:DB.users.admin}[S.role];
+    const my=DB.notifs.filter(n=>n.to===roleNotifKey());
+    const unread=my.some(n=>n.unread);
+    who=`<div style="position:relative">
+      <button class="bell" onclick="bellToggle()">🔔${unread?'<span class="dot"></span>':''}</button>
+      ${S.bellOpen?`<div id="bellDrop">${my.length?my.map(n=>`<div class="n ${n.unread?'unread':''}">${n.text}<small>${n.t}</small></div>`).join(''):'<div class="n">Уведомлений нет</div>'}</div>`:''}
+    </div>
+    <div class="who"><b>${u.name}</b><br>${u.role}</div>`;
+  }
+  h.innerHTML = logo+nav+'<div class="hdr-sp"></div>'+who;
+}
+function bellToggle(){
+  S.bellOpen=!S.bellOpen;
+  if(!S.bellOpen) DB.notifs.forEach(n=>{ if(n.to===roleNotifKey()) n.unread=false; });
+  else setTimeout(()=>DB.notifs.forEach(n=>{ if(n.to===roleNotifKey()) n.unread=false; }),400);
+  renderHeader();
+}
+
+/* ================= ЛЕНДИНГ ================= */
+function miniMap(interactive){
+  const marks = DB.apartments.map(a=>{
+    const free = interactive ? isFree(a.id,S.search.from,S.search.to) : true;
+    const cls = interactive ? (free?'free':'busy') : 'free';
+    const sel = S.selApt===a.id?' sel':'';
+    const w = 34 + String(a.price).length*0; 
+    return `<g class="mk ${cls}${sel}" onclick="${interactive?`selectApt(${a.id})`:''}">
+      <circle cx="${a.x}" cy="${a.y}" r="5"></circle>
+      <rect x="${a.x-31}" y="${a.y-30}" width="62" height="20" rx="6"></rect>
+      <text x="${a.x}" y="${a.y-16}" text-anchor="middle">${(a.price/1000).toFixed(1).replace('.',',')} т₽</text>
+    </g>`;
+  }).join('');
+  return `<div class="mapbox"><svg viewBox="0 0 600 430" role="img" aria-label="Карта центра Екатеринбурга с квартирами">
+    <rect width="600" height="430" fill="#F0EDE3"/>
+    <path d="M330 0 C300 60 360 90 340 140 C320 190 250 200 240 260 C230 320 300 340 290 430" fill="none" stroke="#BCD3E2" stroke-width="26" stroke-linecap="round" opacity=".9"/>
+    <ellipse cx="330" cy="55" rx="55" ry="34" fill="#BCD3E2" opacity=".9"/>
+    <text x="332" y="60" text-anchor="middle" font-size="11" fill="#5E7A8C">Городской пруд</text>
+    <text x="255" y="228" text-anchor="middle" font-size="10" fill="#7E96A6" transform="rotate(-70 255 228)">р. Исеть</text>
+    <g stroke="#DDD6C6" stroke-width="3">
+      <line x1="60" y1="170" x2="560" y2="150"/><line x1="50" y1="250" x2="560" y2="235"/>
+      <line x1="70" y1="330" x2="560" y2="320"/><line x1="150" y1="60" x2="180" y2="410"/>
+      <line x1="270" y1="120" x2="285" y2="420"/><line x1="400" y1="60" x2="420" y2="410"/><line x1="490" y1="70" x2="505" y2="400"/>
+    </g>
+    <text x="455" y="145" font-size="10.5" fill="#9A937F">просп. Ленина</text>
+    <text x="455" y="230" font-size="10.5" fill="#9A937F">ул. Малышева</text>
+    <text x="452" y="315" font-size="10.5" fill="#9A937F">ул. Радищева</text>
+    <text x="288" y="412" font-size="10.5" fill="#9A937F" transform="rotate(-87 288 412)">ул. 8 Марта</text>
+    ${marks}
+  </svg>
+  ${interactive?`<div class="map-legend"><span><i style="background:var(--pine)"></i>свободна на даты</span><span><i style="background:#9AA1AD"></i>занята</span></div>`:''}
+  </div>`;
+}
+
+function vLanding(){
+  return `
+  <section class="hero">
+    <div>
+      <h1>Квартира на сутки в центре Екатеринбурга — заселение через 15 минут после оплаты</h1>
+      <p class="lead">Собственные квартиры без посредников. Выбираете даты на карте, оплачиваете онлайн — и получаете код от двери. Залог возвращаем в день выезда, все документы для отчётности выдаём автоматически.</p>
+      <div class="hero-cta">
+        <button class="btn big" onclick="openAuth('up')">Подобрать квартиру</button>
+        <button class="btn ghost big" onclick="openAuth('in')">Войти в кабинет</button>
+      </div>
+      <div class="hero-facts">
+        <div><b>6</b><span>квартир в центре</span></div>
+        <div><b>от 2 500 ₽</b><span>за сутки</span></div>
+        <div><b>9:00–21:00</b><span>${DB.settings.mainPhone}</span></div>
+      </div>
+    </div>
+    <div>${miniMap(false)}</div>
+  </section>
+
+  <section class="sect" id="about">
+    <h2>Кто мы</h2>
+    <p style="max-width:72ch;color:var(--muted)">Ключи24 — семейный бизнес посуточной аренды. Мы сами владеем каждой квартирой, сами следим за чистотой и ремонтом, поэтому фото в каталоге совпадают с реальностью. Работаем официально как ИП: онлайн-оплата через ЮKassa, кассовый чек приходит сразу после платежа, для командировочных готовим акты и счета.</p>
+  </section>
+
+  <section class="sect" id="how">
+    <h2>Как заселиться</h2>
+    <div class="cols3" style="grid-template-columns:repeat(4,1fr)">
+      <div class="step"><div class="n">1</div><h3>Выберите даты</h3><p>Карта показывает только свободные на ваш период квартиры.</p></div>
+      <div class="step"><div class="n">2</div><h3>Оплатите онлайн</h3><p>Картой или через СБП. Чек — сразу на почту и в кабинет.</p></div>
+      <div class="step"><div class="n">3</div><h3>Получите код</h3><p>Инструкция заселения и код от кейбокса придут в личный кабинет.</p></div>
+      <div class="step"><div class="n">4</div><h3>Залог вернём</h3><p>После проверки квартиры в день выезда — тем же способом оплаты.</p></div>
+    </div>
+  </section>
+
+  <section class="sect" id="docs4b">
+    <h2>Командировочным и юрлицам</h2>
+    <div class="cols3">
+      <div class="step"><h3>Кассовый чек</h3><p>Автоматически после каждой оплаты — принимается бухгалтерией для авансового отчёта.</p></div>
+      <div class="step"><h3>Акт и счёт</h3><p>Сформируем и отправим на e-mail за пару минут прямо из кабинета.</p></div>
+      <div class="step"><h3>Оплата от организации</h3><p>Выставим счёт на юрлицо, работаем по договору.</p></div>
+    </div>
+  </section>
+
+  <footer><div class="foot">
+    <div><b style="color:var(--ink)">Ключи24</b> · ИП Алимпиев И.А. · г. Екатеринбург<br>Единый номер: ${DB.settings.mainPhone}, ежедневно ${DB.settings.workFrom}–${DB.settings.workTo}</div>
+    <div>Оплата: ЮKassa (карты, СБП) · Чеки по 54-ФЗ<br>Это демонстрационный прототип интерфейса</div>
+  </div></footer>`;
+}
+
+/* авторизация */
+function openAuth(mode){
+  modal(`<div class="m-hd"><h3>${mode==='in'?'Вход':'Регистрация'}</h3><button class="x" onclick="closeModal()">✕</button></div>
+  <div class="m-bd">
+    ${mode==='up'?`<div class="frow"><label>Имя и фамилия</label><input value="Дмитрий Соколов"></div>`:''}
+    <div class="frow"><label>Телефон</label><input value="+7 912 345-67-89"></div>
+    <div class="frow"><label>Пароль</label><input type="password" value="••••••••"></div>
+    <button class="btn big" style="width:100%" onclick="closeModal();setRole('client');toast('${mode==='in'?'Вход выполнен':'Аккаунт создан'} (демо)')">${mode==='in'?'Войти':'Создать аккаунт'}</button>
+    <p class="hint" style="margin-top:10px;text-align:center">В боевой версии — подтверждение телефона по SMS-коду</p>
+  </div>`);
+}
+
+/* ================= КЛИЕНТ ================= */
+function vClient(){
+  if(S.clientTab==='my') return cMy();
+  if(S.clientTab==='docs') return cDocs();
+  return cSearch();
+}
+function doSearch(){
+  const f=document.getElementById('sf').value, t=document.getElementById('st').value;
+  if(f && t && P(t)>P(f)){ S.search={from:f,to:t}; S.selApt=null; render(); }
+  else toast('Дата выезда должна быть позже даты заезда');
+}
+function selectApt(id){ S.selApt = S.selApt===id?null:id; render();
+  const el=document.getElementById('apt-'+id); if(el) el.scrollIntoView({block:'nearest',behavior:'smooth'}); }
+
+function cSearch(){
+  const {from,to}=S.search; const n=nights(from,to);
+  const list = DB.apartments.map(a=>{
+    const free=isFree(a.id,from,to);
+    return `<div class="apt ${S.selApt===a.id?'sel':''} ${free?'':'off'}" id="apt-${a.id}" onclick="selectApt(${a.id})">
+      <div class="ph" style="background:${a.g}">${a.ic}</div>
+      <div><h4>${a.addr}</h4><div class="meta">${a.rooms} · залог ${RUB(a.dep)}</div>
+        <div style="margin-top:6px">${free?'<span class="tag free">Свободна на ваши даты</span>':'<span class="tag gray">Занята на выбранные даты</span>'}</div></div>
+      <div class="price" style="text-align:right"><b>${RUB(a.price)}</b><br><span>за сутки · ${RUB(a.price*n)} за ${n} ноч.</span><br>
+        <button class="btn sm" style="margin-top:8px" ${free?'':'disabled'} onclick="event.stopPropagation();openBooking(${a.id})">Забронировать</button></div>
+    </div>`;
+  }).join('');
+  return `<div class="wrap">
+    <div class="card" style="margin-bottom:16px"><div class="bd" style="display:flex;gap:14px;align-items:end;flex-wrap:wrap">
+      <div class="frow" style="margin:0"><label>Город</label><select disabled style="min-width:160px"><option>Екатеринбург</option></select></div>
+      <div class="frow" style="margin:0"><label>Заезд</label><input type="date" id="sf" value="${from}" min="${iso(TODAY)}"></div>
+      <div class="frow" style="margin:0"><label>Выезд</label><input type="date" id="st" value="${to}" min="${iso(addD(TODAY,1))}"></div>
+      <button class="btn" onclick="doSearch()">Показать свободные</button>
+      <span class="hint">${n} ноч. · ${fmtD(from)} — ${fmtD(to)}</span>
+    </div></div>
+    <div class="split">
+      <div>${miniMap(true)}</div>
+      <div class="grid">${list}</div>
+    </div>
+  </div>`;
+}
+
+/* бронирование и оплата */
+function openBooking(aptId){
+  const a=apt(aptId); const {from,to}=S.search; const n=nights(from,to);
+  const total=a.price*n + a.dep;
+  modal(`<div class="m-hd"><h3>Бронирование · ${a.addr}</h3><button class="x" onclick="closeModal()">✕</button></div>
+  <div class="m-bd">
+    <div class="kv"><span>Даты проживания</span><b>${fmtD(from)} — ${fmtD(to)} · ${n} ноч.</b></div>
+    <div class="kv"><span>Проживание ${n} × ${RUB(a.price)}</span><b>${RUB(a.price*n)}</b></div>
+    <div class="kv"><span>Возвратный залог</span><b>${RUB(a.dep)}</b></div>
+    <div class="kv" style="border-top:1px solid var(--line);margin-top:6px;padding-top:10px;font-size:16px"><span>К оплате сейчас</span><b>${RUB(total)}</b></div>
+    <p class="hint" style="margin:8px 0 14px">Залог возвращается на тот же способ оплаты после проверки квартиры в день выезда.</p>
+    <button class="btn big" style="width:100%" onclick="openPay(${total}, 'Оплата брони · ${a.addr}', ()=>finishBooking(${aptId}))">Перейти к оплате</button>
+  </div>`);
+}
+let payCb=null;
+function openPay(amount, title, cb){
+  payCb=cb; S.payMethod='card';
+  modal(payHTML(amount,title));
+}
+function payHTML(amount,title){
+  return `<div class="m-hd"><h3>ЮKassa · демо-оплата</h3><button class="x" onclick="closeModal()">✕</button></div>
+  <div class="m-bd">
+    <p style="margin-bottom:10px">${title}</p>
+    <div class="paybox">
+      <div class="kv" style="font-size:16px"><span>Сумма</span><b>${RUB(amount)}</b></div>
+      <div class="paymeth">
+        <button class="${S.payMethod==='card'?'on':''}" onclick="S.payMethod='card';this.parentNode.children[0].classList.add('on');this.parentNode.children[1].classList.remove('on')">💳 Банковская карта</button>
+        <button class="${S.payMethod==='sbp'?'on':''}" onclick="S.payMethod='sbp';this.parentNode.children[1].classList.add('on');this.parentNode.children[0].classList.remove('on')">🏦 СБП</button>
+      </div>
+      <div class="frow"><label>Номер карты</label><input value="4111 1111 1111 1111" disabled></div>
+      <div style="display:flex;gap:10px"><div class="frow" style="flex:1"><label>Срок</label><input value="12/28" disabled></div><div class="frow" style="flex:1"><label>CVC</label><input value="•••" disabled></div></div>
+      <button class="btn big" style="width:100%" onclick="payDone(${amount})">Оплатить ${RUB(amount)}</button>
+      <p class="hint" style="margin-top:9px;text-align:center">Демо: платёж эмулируется. В бою — виджет ЮKassa, получатель ИП администратора, чек по 54-ФЗ автоматически.</p>
+    </div>
+  </div>`;
+}
+function payDone(amount){
+  closeModal();
+  toast('Платёж '+RUB(amount)+' проведён (демо), чек отправлен на e-mail');
+  if(payCb){ const cb=payCb; payCb=null; cb(); }
+}
+function finishBooking(aptId){
+  const a=apt(aptId); const {from,to}=S.search; const n=nights(from,to);
+  const id=DB.seq.booking++;
+  DB.bookings.push({id, apt:aptId, from, to, client:'cli', status:'paid',
+    dep:{amount:a.dep,status:'held',deductions:[],surcharges:[]}});
+  DB.payments.unshift({id:DB.seq.pay++, d:fmtDY(iso(TODAY)), type:'Оплата брони №'+id, amount:a.price*n+a.dep, method:(S.payMethod==='sbp'?'СБП':'Карта')+' · ЮKassa', dir:'+'});
+  DB.docs.unshift({id:DB.seq.doc++, booking:id, type:'Чек', title:'Кассовый чек · оплата брони №'+id, d:fmtDY(iso(TODAY)), sum:a.price*n+a.dep});
+  DB.cleanTasks.push({id:DB.seq.task++, apt:aptId, type:'Подготовка к заезду', due:fmtD(from)+' до 13:00', status:'new', by:null, seenAt:null, doneAt:null, photos:0, booking:id});
+  chatPush(id,'staff','Система','Бронь №'+id+' оплачена. Инструкция заселения и код от кейбокса придут сюда в день заезда до 13:00.');
+  notify('manager','Новая онлайн-бронь №'+id+' · '+a.addr+' · '+fmtD(from)+'–'+fmtD(to));
+  notify('admin','Оплачена бронь №'+id+' · '+RUB(a.price*n+a.dep)+' (ЮKassa)');
+  notify('cleaner','Новая задача: подготовка к заезду — '+a.addr+', '+fmtD(from));
+  S.clientTab='my'; render();
+  toast('Бронь №'+id+' подтверждена');
+}
+
+function bookingStatus(b){
+  if(b.status==='pending') return '<span class="tag clean">Ожидает оплаты</span>';
+  if(b.status==='done') return '<span class="tag gray">Завершена</span>';
+  if(P(b.to)<=TODAY) return '<span class="tag clean">Выезд сегодня до 12:00</span>';
+  if(P(b.from)<=TODAY) return '<span class="tag busy">Проживание · выезд '+fmtD(b.to)+'</span>';
+  return '<span class="tag free">Оплачена · заезд '+fmtD(b.from)+'</span>';
+}
+function depBlock(b, isClient){
+  const d=b.dep;
+  const ded=d.deductions.map(x=>`<div class="kv"><span>Вычет: ${x.reason}</span><b style="color:var(--clay)">− ${RUB(x.sum)}</b></div>`).join('');
+  const sur=d.surcharges.map((x,i)=>`<div class="kv"><span>Доначисление: ${x.reason}</span><b style="color:var(--clay)">${RUB(x.sum)} ${x.paid?'· оплачено':''}</b></div>
+    ${(!x.paid && isClient)?`<button class="btn sm" onclick="openPay(${x.sum},'Доначисление по брони №${b.id}: ${x.reason}',()=>paySurcharge(${b.id},${i}))">Оплатить ${RUB(x.sum)}</button>`:''}`).join('');
+  const st = d.status==='returned'?'<span class="tag free">Возвращён</span>'
+    : d.status==='partial'?'<span class="tag clean">Возвращён частично</span>'
+    : d.status==='none'?'<span class="tag gray">Оплачивается при брони</span>'
+    : '<span class="tag busy">Удержан до выезда</span>';
+  return `<div style="border-top:1px dashed var(--line);margin-top:9px;padding-top:9px">
+    <div class="kv"><span>Залог ${RUB(d.amount)}</span>${st}</div>${ded}${sur}</div>`;
+}
+function paySurcharge(bid,i){
+  const b=bk(bid); b.dep.surcharges[i].paid=true;
+  DB.payments.unshift({id:DB.seq.pay++, d:fmtDY(iso(TODAY)), type:'Доначисление по брони №'+bid, amount:b.dep.surcharges[i].sum, method:'Карта · ЮKassa', dir:'+'});
+  DB.docs.unshift({id:DB.seq.doc++, booking:bid, type:'Чек', title:'Кассовый чек · доначисление по брони №'+bid, d:fmtDY(iso(TODAY)), sum:b.dep.surcharges[i].sum});
+  chatPush(bid,'client','Дмитрий','Оплатил доначисление '+RUB(b.dep.surcharges[i].sum)+'.');
+  notify('admin','Клиент оплатил доначисление по брони №'+bid);
+  render();
+}
+
+function cMy(){
+  const my=DB.bookings.filter(b=>b.client==='cli').sort((a,b)=>b.id-a.id);
+  return `<div class="wrap"><div class="grid" style="max-width:760px">
+    ${my.map(b=>{const a=apt(b.apt);return `<div class="card"><div class="bd">
+      <div style="display:flex;gap:13px;align-items:center;flex-wrap:wrap">
+        <div class="ph" style="background:${a.g};width:74px;height:56px;font-size:22px">${a.ic}</div>
+        <div style="flex:1;min-width:200px"><b>${a.addr}</b><div class="hint">Бронь №${b.id} · ${fmtD(b.from)} — ${fmtD(b.to)} · ${nights(b.from,b.to)} ноч.</div></div>
+        ${bookingStatus(b)}
+      </div>
+      ${depBlock(b,true)}
+      <div style="display:flex;gap:8px;margin-top:11px;flex-wrap:wrap">
+        <button class="btn ghost sm" onclick="openChatModal(${b.id})">💬 Чат с менеджером</button>
+        <button class="btn ghost sm" onclick="setTab('clientTab','docs')">Документы</button>
+      </div>
+    </div></div>`;}).join('')}
+  </div></div>`;
+}
+
+function cDocs(){
+  const my=DB.docs.filter(d=>{const b=bk(d.booking);return b && b.client==='cli';});
+  return `<div class="wrap"><div class="card" style="max-width:760px"><div class="hd"><h3>Отчётные документы</h3><span class="hint">чеки 54-ФЗ, акты, счета — для авансовых отчётов</span></div>
+  <div class="bd"><table class="t"><tr><th>Дата</th><th>Документ</th><th>Сумма</th><th></th></tr>
+  ${my.map(d=>`<tr><td>${d.d}</td><td>${d.title}</td><td>${RUB(d.sum)}</td>
+    <td style="white-space:nowrap"><button class="btn ghost sm" onclick="openDoc(${d.id})">Открыть</button></td></tr>`).join('')}
+  </table>
+  <p class="hint" style="margin-top:10px">Нужен акт или счёт на юрлицо — напишите менеджеру в чат брони, документ появится здесь и уйдёт на e-mail.</p>
+  </div></div></div>`;
+}
+
+/* чат */
+function openChatModal(bid){
+  const b=bk(bid); const a=apt(b.apt);
+  const msgs=(DB.chats[bid]||[]);
+  const isStaff = S.role!=='client';
+  modal(`<div class="m-hd"><h3>Чат · бронь №${bid} · ${a.addr}</h3><button class="x" onclick="closeModal()">✕</button></div>
+  <div class="m-bd">
+    <div class="chat" id="chatBox">${msgs.map(m=>{
+      const me = (isStaff && m.from==='staff')||(!isStaff && m.from==='client');
+      return `<div class="msg ${me?'me':'them'}">${m.text}<small>${m.name} · ${m.t}</small></div>`;}).join('')||'<p class="hint">Сообщений пока нет</p>'}</div>
+    <div class="chat-in"><input id="chatTxt" placeholder="Сообщение…" onkeydown="if(event.key==='Enter')sendChat(${bid})"><button class="btn" onclick="sendChat(${bid})">Отправить</button></div>
+  </div>`);
+  setTimeout(()=>{const c=document.getElementById('chatBox');if(c)c.scrollTop=c.scrollHeight;},50);
+}
+function sendChat(bid){
+  const inp=document.getElementById('chatTxt'); const txt=inp.value.trim(); if(!txt)return;
+  const isStaff=S.role!=='client';
+  const name = isStaff ? ({manager:'Марина (менеджер)',admin:'Игорь (администратор)',cleaner:'Тамара (уборщица)',repair:'Виктор (ремонтник)'}[S.role]||'Сотрудник') : 'Дмитрий';
+  chatPush(bid, isStaff?'staff':'client', name, txt);
+  notify(isStaff?'client':'manager','Новое сообщение в чате брони №'+bid);
+  openChatModal(bid); renderHeader();
+}
+
+/* документ-просмотр */
+function openDoc(id){
+  const d=DB.docs.find(x=>x.id===id); const b=bk(d.booking); const a=apt(b.apt);
+  modal(`<div class="m-hd"><h3>${d.type} · бронь №${b.id}</h3><button class="x" onclick="closeModal()">✕</button></div>
+  <div class="m-bd">
+    <div class="docv">
+      <h4>${d.title}</h4>
+      <div class="hint">ИП Алимпиев Игорь Александрович · ИНН 66••••••••34 · г. Екатеринбург</div>
+      <div class="sep"></div>
+      <div class="kv"><span>Услуга</span><b>Проживание: ${a.addr}</b></div>
+      <div class="kv"><span>Период</span><b>${fmtD(b.from)} — ${fmtD(b.to)}</b></div>
+      <div class="kv"><span>Покупатель</span><b>${clientName(b)}</b></div>
+      <div class="kv"><span>Дата документа</span><b>${d.d}</b></div>
+      <div class="sep"></div>
+      <div class="kv" style="font-size:16px"><span>Итого</span><b>${RUB(d.sum)}</b></div>
+      <div class="hint" style="margin-top:8px">ФД 00${d.id}84 · ФН 99••••••01 · ОФД «Такском» — реквизиты фискального чека (демо)</div>
+    </div>
+    <div style="display:flex;gap:9px;margin-top:13px">
+      <button class="btn ghost" onclick="toast('В боевой версии откроется PDF-файл')">Скачать PDF</button>
+      <button class="btn ghost" onclick="toast('Документ отправлен на e-mail (демо)')">Отправить на e-mail</button>
+    </div>
+  </div>`);
+}
+
+/* ================= МЕНЕДЖЕР ================= */
+function vManager(){
+  if(S.managerTab==='req') return mReq();
+  if(S.managerTab==='chats') return mChats();
+  return mShift();
+}
+function mShift(){
+  const r=routeNow(); const s=DB.settings;
+  const meToday = s.days[dow1(new Date())]==='m1';
+  const week = [1,2,3,4,5,6,7].map(d=>`<div class="d"><b>${DOW[d-1]}</b>${s.days[d]?DB.users[s.days[d]].name.split(' ')[0]:'—'}</div>`).join('');
+  return `<div class="wrap"><div class="grid" style="max-width:860px">
+    <div class="routebar ${r.work&&r.mid==='m1'?'':'off'}">
+      <span class="pulse"></span>
+      <div><b>${meToday && r.work ? 'Ваша смена — звонки с '+s.mainPhone+' идут на ваш номер '+DB.users.m1.phone
+        : 'Сейчас звонки принимает: '+r.who+' ('+r.phone+')'}</b>
+      <div style="opacity:.75;font-size:13px">Рабочее время ${s.workFrom}–${s.workTo} · вне его — переадресация на администратора</div></div>
+    </div>
+    <div class="card"><div class="hd"><h3>График смен на неделю</h3><span class="hint">задаётся администратором</span></div>
+      <div class="bd"><div class="shiftgrid">${week}</div></div></div>
+    <div class="card"><div class="hd"><h3>Звонки за сегодня</h3></div><div class="bd">
+      <table class="t"><tr><th>Время</th><th>Номер</th><th>Направлен</th><th>Статус</th><th>Заметка</th><th></th></tr>
+      ${DB.calls.map(c=>`<tr><td>${c.t}</td><td>${c.num}</td><td>${c.to}</td><td>${c.st}</td><td>${c.note}</td>
+        <td>${c.booking?'<span class="tag free">Бронь №'+c.booking+'</span>':`<button class="btn ghost sm" onclick="mgrNewBooking('${c.num}')">Оформить бронь</button>`}</td></tr>`).join('')}
+      </table></div></div>
+  </div></div>`;
+}
+function mgrNewBooking(phone){
+  modal(`<div class="m-hd"><h3>Бронь по звонку</h3><button class="x" onclick="closeModal()">✕</button></div>
+  <div class="m-bd">
+    <div class="frow"><label>Гость (имя и телефон)</label><input id="nbG" value="Гость · ${phone||'+7 '}"></div>
+    <div class="frow"><label>Квартира</label><select id="nbA">${DB.apartments.map(a=>`<option value="${a.id}">${a.addr} · ${RUB(a.price)}/сут</option>`).join('')}</select></div>
+    <div style="display:flex;gap:10px"><div class="frow" style="flex:1"><label>Заезд</label><input type="date" id="nbF" value="${iso(addD(TODAY,1))}"></div>
+    <div class="frow" style="flex:1"><label>Выезд</label><input type="date" id="nbT" value="${iso(addD(TODAY,3))}"></div></div>
+    <button class="btn big" style="width:100%" onclick="mgrBookingApply()">Создать и отправить ссылку на оплату</button>
+    <p class="hint" style="margin-top:9px">Гость получит SMS со ссылкой ЮKassa. До оплаты бронь удерживает даты 40 минут.</p>
+  </div>`);
+}
+function mgrBookingApply(){
+  const aid=+document.getElementById('nbA').value, f=document.getElementById('nbF').value, t=document.getElementById('nbT').value, g=document.getElementById('nbG').value;
+  if(!isFree(aid,f,t)){ toast('Квартира занята на эти даты'); return; }
+  const id=DB.seq.booking++;
+  DB.bookings.push({id, apt:aid, from:f, to:t, client:null, guest:g, status:'pending', dep:{amount:apt(aid).dep,status:'none',deductions:[],surcharges:[]}});
+  notify('admin','Менеджер создал бронь №'+id+' (ожидает оплаты)');
+  closeModal(); render(); toast('Бронь №'+id+' создана, ссылка на оплату отправлена (демо)');
+}
+function markPaid(bid){
+  const b=bk(bid); b.status='paid'; b.dep.status='held';
+  const a=apt(b.apt); const sum=a.price*nights(b.from,b.to)+a.dep;
+  DB.payments.unshift({id:DB.seq.pay++, d:fmtDY(iso(TODAY)), type:'Оплата брони №'+bid, amount:sum, method:'СБП · ЮKassa', dir:'+'});
+  DB.docs.unshift({id:DB.seq.doc++, booking:bid, type:'Чек', title:'Кассовый чек · оплата брони №'+bid, d:fmtDY(iso(TODAY)), sum});
+  toast('Оплата по брони №'+bid+' получена'); render();
+}
+function mReq(){
+  const days=[...Array(10)].map((_,i)=>iso(addD(TODAY,i)));
+  const rows=DB.apartments.map(a=>{
+    const cells=days.map(d=>{
+      const b=DB.bookings.find(x=>x.apt===a.id && (x.status==='paid'||x.status==='pending') && P(x.from)<=P(d) && P(x.to)>P(d));
+      return `<td class="${b?(b.status==='pending'?'p':'b'):''}" title="${b?('№'+b.id+' '+clientName(b)):''}">${b?('№'+b.id):''}</td>`;
+    }).join('');
+    return `<tr><td>${a.addr}</td>${cells}</tr>`;
+  }).join('');
+  const pend=DB.bookings.filter(b=>b.status==='pending');
+  return `<div class="wrap"><div class="grid">
+    <div class="card"><div class="hd"><h3>Шахматка занятости · 10 дней</h3>
+      <span class="tag busy">оплачена</span><span class="tag clean">ожидает оплаты</span>
+      <div class="hdr-sp"></div><button class="btn sm" onclick="mgrNewBooking('')">+ Новая бронь</button></div>
+      <div class="bd chess"><table><tr><th>Квартира</th>${days.map(d=>`<th>${fmtD(d)}<br>${DOW[dow1(P(d))-1]}</th>`).join('')}</tr>${rows}</table></div></div>
+    <div class="card"><div class="hd"><h3>Ожидают оплаты</h3></div><div class="bd">
+      ${pend.length?`<table class="t"><tr><th>№</th><th>Гость</th><th>Квартира</th><th>Даты</th><th></th></tr>
+      ${pend.map(b=>`<tr><td>${b.id}</td><td>${clientName(b)}</td><td>${apt(b.apt).addr}</td><td>${fmtD(b.from)}–${fmtD(b.to)}</td>
+      <td><button class="btn ok sm" onclick="markPaid(${b.id})">Оплата получена</button></td></tr>`).join('')}</table>`:'<p class="hint">Все брони оплачены</p>'}
+    </div></div>
+  </div></div>`;
+}
+function mChats(){
+  const threads=Object.keys(DB.chats).map(Number);
+  return `<div class="wrap"><div class="card" style="max-width:720px"><div class="hd"><h3>Чаты с гостями</h3></div><div class="bd grid">
+    ${threads.length?threads.map(bid=>{const b=bk(bid);const last=DB.chats[bid][DB.chats[bid].length-1];
+      return `<div class="apt" style="grid-template-columns:1fr auto"><div><b>Бронь №${bid} · ${apt(b.apt).addr}</b>
+      <div class="hint">${clientName(b)} · последнее: «${last.text.slice(0,60)}${last.text.length>60?'…':''}»</div></div>
+      <button class="btn ghost sm" onclick="openChatModal(${bid})">Открыть</button></div>`;}).join(''):'<p class="hint">Чатов пока нет</p>'}
+  </div></div></div>`;
+}
+
+/* ================= УБОРЩИЦА ================= */
+function vCleaner(){
+  const open=DB.cleanTasks.filter(t=>t.status!=='done');
+  const done=DB.cleanTasks.filter(t=>t.status==='done');
+  const row=t=>{const a=apt(t.apt);
+    const st=t.status==='new'?'<span class="tag fix">Новая — подтвердите</span>'
+      :t.status==='seen'?'<span class="tag clean">Принята вами</span>'
+      :t.status==='progress'?'<span class="tag busy">Убираетесь</span>'
+      :'<span class="tag free">Готово</span>';
+    const btn=t.status==='new'?`<button class="btn sm" onclick="taskSeen(${t.id})">Приняла ✓</button>`
+      :t.status==='seen'?`<button class="btn sm" onclick="taskStart(${t.id})">Начала уборку</button>`
+      :t.status==='progress'?`<button class="btn ok sm" onclick="taskDone(${t.id})">Готово + фотоотчёт</button>`
+      :`<span class="hint">${t.doneAt} · фото: ${t.photos}</span>`;
+    return `<div class="apt" style="grid-template-columns:74px 1fr auto">
+      <div class="ph" style="background:${a.g};width:74px;height:56px;font-size:22px">${a.ic}</div>
+      <div><b>${a.addr}</b><div class="hint">${t.type} · ${t.due} · бронь №${t.booking}</div><div style="margin-top:5px">${st}</div></div>
+      <div style="text-align:right">${btn}</div></div>`;
+  };
+  return `<div class="wrap"><div class="grid" style="max-width:760px">
+    <div class="card"><div class="hd"><h3>Мои задачи</h3><span class="hint">кнопка «Приняла» показывает администратору, что вы увидели задачу</span></div>
+      <div class="bd grid">${open.length?open.map(row).join(''):'<p class="hint">Открытых задач нет — отличная работа!</p>'}</div></div>
+    <div class="card"><div class="hd"><h3>Выполнено</h3></div><div class="bd grid">${done.map(row).join('')||'<p class="hint">Пока пусто</p>'}</div></div>
+  </div></div>`;
+}
+function taskSeen(id){const t=DB.cleanTasks.find(x=>x.id===id);t.status='seen';t.by='cl1';t.seenAt=nowT();
+  notify('admin','Уборка «'+apt(t.apt).addr+'»: Тамара Ивановна приняла задачу');render();toast('Задача принята');}
+function taskStart(id){const t=DB.cleanTasks.find(x=>x.id===id);t.status='progress';
+  notify('admin','Уборка «'+apt(t.apt).addr+'»: началась');render();}
+function taskDone(id){const t=DB.cleanTasks.find(x=>x.id===id);t.status='done';t.doneAt=nowT();t.photos=3+Math.floor(Math.random()*3);
+  notify('admin','Уборка «'+apt(t.apt).addr+'»: завершена, фотоотчёт '+t.photos+' фото. Можно возвращать залог по брони №'+t.booking);
+  render();toast('Уборка завершена, фотоотчёт загружен (демо)');}
+
+/* ================= РЕМОНТНИК ================= */
+function vRepair(){
+  const row=r=>{const a=apt(r.apt);
+    const st=r.status==='new'?'<span class="tag fix">Новая</span>':r.status==='in-progress'?'<span class="tag clean">В работе</span>':'<span class="tag free">Выполнено</span>';
+    const btn=r.status==='new'?`<button class="btn sm" onclick="repairStart(${r.id})">Взять в работу</button>`
+      :r.status==='in-progress'?`<button class="btn ok sm" onclick="repairDoneForm(${r.id})">Завершить</button>`
+      :`<span class="hint">Стоимость работ: ${RUB(r.cost||0)}</span>`;
+    return `<div class="apt" style="grid-template-columns:74px 1fr auto">
+      <div class="ph" style="background:${a.g};width:74px;height:56px;font-size:22px">🔧</div>
+      <div><b>${a.addr}</b><div class="hint">${r.desc} · заявка от ${r.created}</div><div style="margin-top:5px">${st} ${r.block&&r.status!=='done'?'<span class="tag gray">квартира снята с продажи</span>':''}</div></div>
+      <div style="text-align:right">${btn}</div></div>`;
+  };
+  return `<div class="wrap"><div class="card" style="max-width:760px"><div class="hd"><h3>Заявки на ремонт</h3><span class="hint">создаются менеджером, уборщицей или администратором</span></div>
+  <div class="bd grid">${DB.repairs.map(row).join('')}</div></div></div>`;
+}
+function repairStart(id){const r=DB.repairs.find(x=>x.id===id);r.status='in-progress';r.by='rp1';render();}
+function repairDoneForm(id){
+  modal(`<div class="m-hd"><h3>Завершение ремонта</h3><button class="x" onclick="closeModal()">✕</button></div>
+  <div class="m-bd">
+    <div class="frow"><label>Стоимость работ и материалов, ₽</label><input type="number" id="rc" value="1800"></div>
+    <div class="frow"><label>Комментарий</label><textarea rows="2">Заменил картридж смесителя, проверил — течи нет.</textarea></div>
+    <button class="btn big" style="width:100%" onclick="repairDone(${id})">Завершить заявку</button>
+  </div>`);
+}
+function repairDone(id){
+  const r=DB.repairs.find(x=>x.id===id); r.status='done'; r.cost=+document.getElementById('rc').value||0;
+  notify('admin','Ремонт «'+apt(r.apt).addr+'» завершён · '+RUB(r.cost)+'. Если поломка по вине гостя — оформите вычет из залога.');
+  closeModal(); render(); toast('Заявка закрыта');
+}
+
+/* ================= АДМИН ================= */
+function vAdmin(){
+  return {board:aBoard,tel:aTel,dep:aDep,pay:aPay,docs:aDocs,team:aTeam}[S.adminTab]();
+}
+function aBoard(){
+  return `<div class="wrap">
+    <div class="board">${DB.apartments.map(a=>{const s=aptState(a);
+      return `<div class="bcard ${s.cls}"><h4>${a.addr}</h4>${s.tag}
+        <div class="st">${s.line}</div><div class="sub">${s.sub}</div></div>`;}).join('')}
+    </div>
+    <div class="card" style="margin-top:16px"><div class="hd"><h3>Задачи уборки — контроль</h3></div><div class="bd">
+      <table class="t"><tr><th>Квартира</th><th>Тип</th><th>Срок</th><th>Увидела?</th><th>Статус</th></tr>
+      ${DB.cleanTasks.map(t=>`<tr><td>${apt(t.apt).addr}</td><td>${t.type}</td><td>${t.due}</td>
+        <td>${t.status==='new'?'<b style="color:var(--clay)">нет ⚠</b>':(DB.users[t.by].name+' · '+(t.seenAt||''))}</td>
+        <td>${t.status==='new'?'<span class="tag fix">Не принята</span>':t.status==='seen'?'<span class="tag clean">Принята</span>':t.status==='progress'?'<span class="tag busy">Идёт уборка</span>':'<span class="tag free">Готово · фото '+t.photos+'</span>'}</td></tr>`).join('')}
+      </table></div></div>
+  </div>`;
+}
+
+function aTel(){
+  const s=DB.settings; const r=routeNow();
+  return `<div class="wrap"><div class="grid" style="max-width:900px">
+    <div class="routebar ${r.work?'':'off'}"><span class="pulse"></span>
+      <div><b>Сейчас (${DOW[dow1(new Date())-1]}, ${nowT()}): звонки с ${s.mainPhone} → ${r.who}, ${r.phone}</b>
+      <div style="opacity:.75;font-size:13px">${r.work?'Рабочее время, действует смена менеджера':'Нерабочее время — все вызовы идут на мобильный администратора'}</div></div></div>
+
+    <div class="two">
+      <div class="card"><div class="hd"><h3>Рабочее время</h3></div><div class="bd">
+        <div style="display:flex;gap:10px"><div class="frow" style="flex:1"><label>С</label><input type="time" id="wf" value="${s.workFrom}"></div>
+        <div class="frow" style="flex:1"><label>До</label><input type="time" id="wt" value="${s.workTo}"></div></div>
+        <p class="hint" style="margin-bottom:10px">Вне этого интервала облачная АТС переводит все вызовы на ${DB.users.admin.phone} (администратор).</p>
+        <button class="btn" onclick="saveTel()">Сохранить и применить в АТС</button>
+      </div></div>
+      <div class="card"><div class="hd"><h3>Проверить маршрут</h3></div><div class="bd">
+        <div style="display:flex;gap:10px"><div class="frow" style="flex:1"><label>День</label><select id="ckD">${DOW.map((d,i)=>`<option value="${i+1}">${d}</option>`).join('')}</select></div>
+        <div class="frow" style="flex:1"><label>Время</label><input type="time" id="ckT" value="10:30"></div></div>
+        <button class="btn ghost" onclick="routeCheck()">Куда попадёт звонок?</button>
+        <p id="ckR" style="margin-top:10px;font-weight:700"></p>
+      </div></div>
+    </div>
+
+    <div class="card"><div class="hd"><h3>Смены менеджеров по дням недели</h3><span class="hint">кто в этот день принимает переадресацию</span></div>
+      <div class="bd"><div class="shiftgrid">
+        ${[1,2,3,4,5,6,7].map(d=>`<div class="d"><b>${DOW[d-1]}</b>
+          <select onchange="DB.settings.days[${d}]=this.value||null;render();toast('Смена ${DOW[d-1]} обновлена, правило АТС переприменено (демо)')">
+            <option value="m1" ${s.days[d]==='m1'?'selected':''}>Марина</option>
+            <option value="m2" ${s.days[d]==='m2'?'selected':''}>Олег</option>
+            <option value="" ${!s.days[d]?'selected':''}>— (админ)</option>
+          </select></div>`).join('')}
+      </div>
+      <p class="hint" style="margin-top:11px">Механика в бою: при сохранении бэкенд вызывает API облачной АТС (Novofon) и переустанавливает правило переадресации; страхующий cron сверяет расписание каждые 5 минут. Новые менеджеры добавляются во вкладке «Команда».</p>
+      </div></div>
+
+    <div class="card"><div class="hd"><h3>Журнал звонков за сегодня</h3></div><div class="bd">
+      <table class="t"><tr><th>Время</th><th>Номер</th><th>Направлен</th><th>Статус</th><th>Заметка</th></tr>
+      ${DB.calls.map(c=>`<tr><td>${c.t}</td><td>${c.num}</td><td>${c.to}</td><td>${c.st}</td><td>${c.note}</td></tr>`).join('')}
+      </table></div></div>
+  </div></div>`;
+}
+function saveTel(){
+  DB.settings.workFrom=document.getElementById('wf').value;
+  DB.settings.workTo=document.getElementById('wt').value;
+  render(); toast('Рабочее время сохранено, сценарий АТС обновлён (демо)');
+}
+function routeCheck(){
+  const d=+document.getElementById('ckD').value, t=document.getElementById('ckT').value;
+  const r=routeFor(d,t);
+  document.getElementById('ckR').textContent='→ '+r.who+', '+r.phone;
+}
+
+function aDep(){
+  const rows=DB.bookings.slice().sort((a,b)=>b.id-a.id).map(b=>{
+    const a=apt(b.apt); const d=b.dep;
+    const held=d.status==='held';
+    return `<div class="card"><div class="bd">
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+        <div style="flex:1;min-width:220px"><b>Бронь №${b.id} · ${a.addr}</b>
+        <div class="hint">${clientName(b)} · ${fmtD(b.from)}–${fmtD(b.to)}</div></div>
+        ${bookingStatus(b)}
+      </div>
+      ${depBlock(b,false)}
+      ${held?`<div style="display:flex;gap:8px;margin-top:11px;flex-wrap:wrap">
+        <button class="btn ok sm" onclick="depReturn(${b.id})">Вернуть залог полностью</button>
+        <button class="btn danger sm" onclick="depDeductForm(${b.id})">Удержать часть</button>
+        <button class="btn ghost sm" onclick="surchargeForm(${b.id})">Доначислить сверх залога</button>
+        ${b.client?`<button class="btn ghost sm" onclick="openChatModal(${b.id})">💬 Чат</button>`:''}
+      </div>`:''}
+    </div></div>`;
+  }).join('');
+  return `<div class="wrap"><div class="grid" style="max-width:820px">${rows}</div></div>`;
+}
+function depReturn(bid){
+  const b=bk(bid); const rest=b.dep.amount - b.dep.deductions.reduce((s,x)=>s+x.sum,0);
+  b.dep.status = b.dep.deductions.length? 'partial':'returned';
+  DB.payments.unshift({id:DB.seq.pay++, d:fmtDY(iso(TODAY)), type:'Возврат залога №'+bid, amount:rest, method:'ЮKassa · возврат', dir:'−'});
+  DB.docs.unshift({id:DB.seq.doc++, booking:bid, type:'Чек', title:'Чек возврата · залог по брони №'+bid, d:fmtDY(iso(TODAY)), sum:rest});
+  if(b.client){ notify('client','Залог по брони №'+bid+' возвращён: '+RUB(rest)+'. Чек — в документах.');
+    chatPush(bid,'staff','Игорь (администратор)','Залог '+RUB(rest)+' возвращён на ваш способ оплаты. Спасибо, что выбрали нас!'); }
+  render(); toast('Возврат '+RUB(rest)+' проведён через ЮKassa (демо)');
+}
+function depDeductForm(bid){
+  modal(`<div class="m-hd"><h3>Удержание из залога · бронь №${bid}</h3><button class="x" onclick="closeModal()">✕</button></div>
+  <div class="m-bd">
+    <div class="frow"><label>Сумма вычета, ₽</label><input type="number" id="ddS" value="1500"></div>
+    <div class="frow"><label>Причина (увидит клиент)</label><input id="ddR" value="Разбит стеклянный плафон светильника"></div>
+    <p class="hint" style="margin-bottom:11px">Клиент получит уведомление в личный кабинет и сообщение в чат. Остаток залога можно вернуть кнопкой «Вернуть залог».</p>
+    <button class="btn danger big" style="width:100%" onclick="depDeductApply(${bid})">Удержать и уведомить клиента</button>
+  </div>`);
+}
+function depDeductApply(bid){
+  const b=bk(bid); const s=+document.getElementById('ddS').value||0; const r=document.getElementById('ddR').value;
+  b.dep.deductions.push({sum:s,reason:r,date:fmtDY(iso(TODAY))});
+  DB.docs.unshift({id:DB.seq.doc++, booking:bid, type:'Акт', title:'Акт удержания из залога · бронь №'+bid, d:fmtDY(iso(TODAY)), sum:s});
+  if(b.client){ notify('client','Из залога по брони №'+bid+' удержано '+RUB(s)+': '+r+'. Подробности в чате.');
+    chatPush(bid,'staff','Игорь (администратор)','Из залога удержано '+RUB(s)+'. Причина: '+r+'. Акт с фото — в разделе «Документы». Если не согласны — обсудим здесь.'); }
+  closeModal(); render(); toast('Вычет оформлен, клиент уведомлён');
+}
+function surchargeForm(bid){
+  modal(`<div class="m-hd"><h3>Доначисление сверх залога · бронь №${bid}</h3><button class="x" onclick="closeModal()">✕</button></div>
+  <div class="m-bd">
+    <div class="frow"><label>Сумма, ₽</label><input type="number" id="scS" value="2500"></div>
+    <div class="frow"><label>Причина (увидит клиент)</label><input id="scR" value="Химчистка дивана после курения в квартире"></div>
+    <p class="hint" style="margin-bottom:11px">Клиенту придёт счёт в личный кабинет с кнопкой оплаты и сообщение в чат.</p>
+    <button class="btn big" style="width:100%" onclick="surchargeApply(${bid})">Выставить счёт клиенту</button>
+  </div>`);
+}
+function surchargeApply(bid){
+  const b=bk(bid); const s=+document.getElementById('scS').value||0; const r=document.getElementById('scR').value;
+  b.dep.surcharges.push({sum:s,reason:r,paid:false});
+  DB.docs.unshift({id:DB.seq.doc++, booking:bid, type:'Счёт', title:'Счёт на доплату · бронь №'+bid, d:fmtDY(iso(TODAY)), sum:s});
+  if(b.client){ notify('client','Доначисление по брони №'+bid+': '+RUB(s)+' — '+r+'. Оплатить можно в «Мои бронирования».');
+    chatPush(bid,'staff','Игорь (администратор)','Ущерб превысил залог. Выставлен счёт на '+RUB(s)+': '+r+'. Кнопка оплаты — в карточке брони.'); }
+  closeModal(); render(); toast('Счёт выставлен, клиент уведомлён');
+}
+
+function aPay(){
+  const inSum=DB.payments.filter(p=>p.dir==='+').reduce((s,p)=>s+p.amount,0);
+  const outSum=DB.payments.filter(p=>p.dir==='−').reduce((s,p)=>s+p.amount,0);
+  return `<div class="wrap"><div class="card" style="max-width:820px"><div class="hd"><h3>Платежи ЮKassa</h3>
+    <span class="tag free">Принято ${RUB(inSum)}</span><span class="tag fix">Возвраты ${RUB(outSum)}</span>
+    <div class="hdr-sp"></div><button class="btn ghost sm" onclick="toast('Выгрузка CSV за период (демо)')">Выгрузить отчёт</button></div>
+  <div class="bd"><table class="t"><tr><th>Дата</th><th>Операция</th><th>Способ</th><th style="text-align:right">Сумма</th></tr>
+    ${DB.payments.map(p=>`<tr><td>${p.d}</td><td>${p.type}</td><td>${p.method}</td>
+    <td style="text-align:right;font-weight:700;color:${p.dir==='+'?'var(--pine)':'var(--clay)'}">${p.dir} ${RUB(p.amount)}</td></tr>`).join('')}
+  </table>
+  <p class="hint" style="margin-top:10px">Получатель платежей — расчётный счёт ИП администратора, подключённый к ЮKassa. Чеки 54-ФЗ формируются автоматически при оплате, возврате и доначислении.</p>
+  </div></div></div>`;
+}
+
+function aDocs(){
+  return `<div class="wrap"><div class="card" style="max-width:820px"><div class="hd"><h3>Отчётные документы</h3><span class="hint">чеки, акты, счета по всем броням</span></div>
+  <div class="bd"><table class="t"><tr><th>Дата</th><th>Тип</th><th>Документ</th><th>Сумма</th><th></th></tr>
+  ${DB.docs.map(d=>`<tr><td>${d.d}</td><td><span class="tag ${d.type==='Чек'?'free':d.type==='Акт'?'busy':'clean'}">${d.type}</span></td>
+    <td>${d.title}</td><td>${RUB(d.sum)}</td>
+    <td style="white-space:nowrap"><button class="btn ghost sm" onclick="openDoc(${d.id})">Открыть</button>
+    <button class="btn ghost sm" onclick="sendDoc(${d.id})">Отправить клиенту</button></td></tr>`).join('')}
+  </table></div></div></div>`;
+}
+function sendDoc(id){
+  const d=DB.docs.find(x=>x.id===id); const b=bk(d.booking);
+  if(b.client) notify('client','Вам отправлен документ: '+d.title);
+  toast('Документ отправлен на e-mail клиента (демо)');
+}
+
+function aTeam(){
+  const staff=['m1','m2','cl1','cl2','rp1'];
+  return `<div class="wrap"><div class="card" style="max-width:720px"><div class="hd"><h3>Команда</h3>
+    <div class="hdr-sp"></div><button class="btn sm" onclick="toast('Форма добавления сотрудника (демо): роль, ФИО, личный номер для переадресации')">+ Добавить сотрудника</button></div>
+  <div class="bd"><table class="t"><tr><th>Сотрудник</th><th>Роль</th><th>Личный номер</th><th>Смены</th></tr>
+    ${staff.map(k=>{const u=DB.users[k];
+      const sh=u.role==='Менеджер'?[1,2,3,4,5,6,7].filter(d=>DB.settings.days[d]===k).map(d=>DOW[d-1]).join(', ')||'—':'по задачам';
+      return `<tr><td><b>${u.name}</b></td><td>${u.role}</td><td>${u.phone}</td><td>${sh}</td></tr>`;}).join('')}
+  </table>
+  <p class="hint" style="margin-top:10px">Личный номер менеджера используется облачной АТС как цель переадресации в его смену. Уборщиц и ремонтников может быть несколько — задачи берутся из общего пула.</p>
+  </div></div></div>`;
+}
+
+/* ================= МОДАЛКИ ================= */
+function modal(html){
+  const r=document.getElementById('modal-root');
+  r.innerHTML='<div class="modal">'+html+'</div>';
+  r.classList.add('open');
+}
+function closeModal(){ document.getElementById('modal-root').classList.remove('open'); }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModal(); });
+
+render();
+</script>
+</body>
+</html>
