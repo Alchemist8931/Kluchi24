@@ -3,7 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ключи24 — посуточная аренда квартир · прототип</title>
+<title>Ключи24 — посуточная аренда квартир · Академический и Вторчермет · прототип</title>
+<meta name="description" content="Прототип сервиса посуточной аренды квартир в Екатеринбурге: районы Академический и Вторчермет. Демо-интерфейс без привязки к живым сервисам.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
   --paper:#FAF7F1; --card:#FFFFFF; --ink:#222939; --muted:#6E7480;
@@ -16,7 +20,7 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:"SN Pro",-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--paper);color:var(--ink);font-size:15px;line-height:1.55}
+body{font-family:"Manrope",-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--paper);color:var(--ink);font-size:15px;line-height:1.55}
 h1,h2,h3{font-weight:800;letter-spacing:-.02em;line-height:1.15}
 button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
 input,select,textarea{font:inherit;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 10px;outline:none}
@@ -217,6 +221,8 @@ footer{border-top:1px solid var(--line);margin-top:30px}
   <button class="chip" data-r="cleaner" onclick="setRole('cleaner')">Уборщица</button>
   <button class="chip" data-r="repair" onclick="setRole('repair')">Ремонтник</button>
   <button class="chip" data-r="admin" onclick="setRole('admin')">Администратор</button>
+  <span style="flex:1"></span>
+  <button class="chip" data-r="arch" onclick="setRole('arch')">🏗 Архитектура и ТСО</button>
 </div>
 
 <header id="hdr"><div class="hdr-in" id="hdrIn"></div></header>
@@ -240,7 +246,7 @@ const dow1=d=>((d.getDay()+6)%7)+1; // 1=Пн … 7=Вс
 
 const DB = {
   users:{
-    admin:{name:'Игорь Алимпиев', role:'Администратор', phone:'+7 912 000-10-10'},
+    admin:{name:'Артём Ключников', role:'Администратор', phone:'+7 912 000-10-10'},
     m1:{name:'Марина Ковалёва', role:'Менеджер', phone:'+7 902 111-22-33'},
     m2:{name:'Олег Дементьев', role:'Менеджер', phone:'+7 902 444-55-66'},
     cl1:{name:'Тамара Ивановна', role:'Уборщица', phone:'+7 908 700-11-22'},
@@ -255,12 +261,12 @@ const DB = {
     days:{1:'m1',2:'m2',3:'m1',4:'m2',5:'m1',6:'m2',7:'m1'}
   },
   apartments:[
-    {id:1, addr:'ул. Вайнера, 21', rooms:'1-комн · 38 м² · 5/9 эт', price:2900, dep:3000, x:252, y:248, g:'linear-gradient(135deg,#8A6E4B,#C9A96E)', ic:'🛋'},
-    {id:2, addr:'ул. Малышева, 71', rooms:'2-комн · 54 м² · 7/12 эт', price:3900, dep:5000, x:338, y:226, g:'linear-gradient(135deg,#41608C,#7C9BC4)', ic:'🛏'},
-    {id:3, addr:'просп. Ленина, 40', rooms:'Студия · 29 м² · 3/5 эт', price:2500, dep:3000, x:300, y:178, g:'linear-gradient(135deg,#5A7A6A,#93B8A4)', ic:'🏙'},
-    {id:4, addr:'ул. 8 Марта, 46', rooms:'2-комн · 58 м² · 14/25 эт', price:4200, dep:5000, x:272, y:302, g:'linear-gradient(135deg,#7A5A78,#B08CAE)', ic:'🌆'},
-    {id:5, addr:'ул. Радищева, 18', rooms:'1-комн · 41 м² · 9/16 эт', price:3100, dep:3000, x:218, y:282, g:'linear-gradient(135deg,#93683E,#D2A46B)', ic:'🛋'},
-    {id:6, addr:'ул. Хохрякова, 74', rooms:'3-комн · 76 м² · 4/10 эт', price:5500, dep:7000, x:238, y:334, g:'linear-gradient(135deg,#4E5A6E,#8B99AE)', ic:'🏠'}
+    {id:1, d:'Академический', addr:'ул. Вильгельма де Геннина, 33', rooms:'1-комн · 38 м² · 5/18 эт', price:2900, dep:3000, x:118, y:96, g:'linear-gradient(135deg,#8A6E4B,#C9A96E)', ic:'🛋'},
+    {id:2, d:'Академический', addr:'ул. Краснолесья, 97', rooms:'2-комн · 54 м² · 7/16 эт', price:3900, dep:5000, x:84, y:238, g:'linear-gradient(135deg,#41608C,#7C9BC4)', ic:'🛏'},
+    {id:3, d:'Академический', addr:'ул. Павла Шаманова, 24', rooms:'Студия · 29 м² · 3/22 эт', price:2500, dep:3000, x:188, y:168, g:'linear-gradient(135deg,#5A7A6A,#93B8A4)', ic:'🏙'},
+    {id:4, d:'Вторчермет', addr:'ул. Титова, 17', rooms:'2-комн · 58 м² · 4/9 эт', price:4200, dep:5000, x:432, y:222, g:'linear-gradient(135deg,#7A5A78,#B08CAE)', ic:'🌆'},
+    {id:5, d:'Вторчермет', addr:'ул. Агрономическая, 30', rooms:'1-комн · 41 м² · 6/10 эт', price:3100, dep:3000, x:518, y:292, g:'linear-gradient(135deg,#93683E,#D2A46B)', ic:'🛋'},
+    {id:6, d:'Вторчермет', addr:'ул. Селькоровская, 76', rooms:'3-комн · 76 м² · 2/5 эт', price:5500, dep:7000, x:462, y:356, g:'linear-gradient(135deg,#4E5A6E,#8B99AE)', ic:'🏠'}
   ],
   bookings:[
     {id:100, apt:1, from:iso(addD(TODAY,-9)), to:iso(addD(TODAY,-7)), client:'cli', status:'done',
@@ -281,7 +287,7 @@ const DB = {
   ],
   calls:[
     {id:1, t:'07:31', num:'+7 950 118-24-60', to:'Администратор (нерабочее время)', st:'Принят · 1:12', note:'Вопрос о раннем заезде'},
-    {id:2, t:'09:12', num:'+7 922 587-13-70', to:'Марина Ковалёва', st:'Принят · 2:40', note:'Бронь: Ленина 40, '+fmtD(iso(addD(TODAY,1)))+'–'+fmtD(iso(addD(TODAY,4))), booking:103},
+    {id:2, t:'09:12', num:'+7 922 587-13-70', to:'Марина Ковалёва', st:'Принят · 2:40', note:'Бронь: Шаманова 24, '+fmtD(iso(addD(TODAY,1)))+'–'+fmtD(iso(addD(TODAY,4))), booking:103},
     {id:3, t:'10:05', num:'+7 909 331-90-12', to:'Марина Ковалёва', st:'Пропущен', note:'Перезвонить'}
   ],
   payments:[
@@ -304,10 +310,10 @@ const DB = {
     ]
   },
   notifs:[
-    {to:'admin', text:'Сегодня выезд из кв. Малышева, 71 (бронь №101). Создана задача уборки.', t:'08:00', unread:true},
-    {to:'cleaner', text:'Новая задача: уборка после выезда — Малышева, 71, сегодня до 14:00.', t:'08:00', unread:true},
+    {to:'admin', text:'Сегодня выезд из кв. Краснолесья, 97 (бронь №101). Создана задача уборки.', t:'08:00', unread:true},
+    {to:'cleaner', text:'Новая задача: уборка после выезда — Краснолесья, 97, сегодня до 14:00.', t:'08:00', unread:true},
     {to:'client', text:'Чек по брони №101 доступен в разделе «Документы».', t:fmtD(iso(addD(TODAY,-2)))+' 14:22', unread:false},
-    {to:'manager', text:'Бронь №103 (Ленина, 40) ожидает оплаты гостем.', t:'09:15', unread:true}
+    {to:'manager', text:'Бронь №103 (Шаманова, 24) ожидает оплаты гостем.', t:'09:15', unread:true}
   ],
   seq:{booking:104, doc:5, pay:5, task:3, call:4}
 };
@@ -316,7 +322,7 @@ const DB = {
 const S = {
   role:'guest',
   clientTab:'search', managerTab:'shift', adminTab:'board',
-  search:{from:iso(addD(TODAY,1)), to:iso(addD(TODAY,3))},
+  search:{from:iso(addD(TODAY,1)), to:iso(addD(TODAY,3)), district:'all'},
   selApt:null, payMethod:'card', bellOpen:false
 };
 
@@ -374,7 +380,7 @@ function render(){
   document.querySelectorAll('#proto .chip').forEach(c=>c.classList.toggle('on',c.dataset.r===S.role));
   renderHeader();
   const app=document.getElementById('app');
-  app.innerHTML = {guest:vLanding,client:vClient,manager:vManager,cleaner:vCleaner,repair:vRepair,admin:vAdmin}[S.role]();
+  app.innerHTML = {guest:vLanding,client:vClient,manager:vManager,cleaner:vCleaner,repair:vRepair,admin:vAdmin,arch:vArch}[S.role]();
 }
 
 function renderHeader(){
@@ -385,6 +391,8 @@ function renderHeader(){
   if(S.role==='guest'){
     nav=`<nav class="hdr-nav"><button onclick="document.getElementById('about').scrollIntoView()">О нас</button><button onclick="document.getElementById('how').scrollIntoView()">Как заселиться</button><button onclick="document.getElementById('docs4b').scrollIntoView()">Командировочным</button></nav>`;
     who=`<button class="btn ghost" onclick="openAuth('in')">Войти</button><button class="btn" onclick="openAuth('up')">Регистрация</button>`;
+  } else if(S.role==='arch'){
+    who=`<div class="who"><b>Техническое приложение</b><br>подключения · себестоимость · механика</div>`;
   } else {
     if(S.role==='client') nav=`<nav class="hdr-nav">${navBtn('clientTab','search','Подбор квартиры')}${navBtn('clientTab','my','Мои бронирования')}${navBtn('clientTab','docs','Документы')}</nav>`;
     if(S.role==='manager') nav=`<nav class="hdr-nav">${navBtn('managerTab','shift','Смена и звонки')}${navBtn('managerTab','req','Брони и шахматка')}${navBtn('managerTab','chats','Чаты')}</nav>`;
@@ -410,34 +418,46 @@ function bellToggle(){
 /* ================= ЛЕНДИНГ ================= */
 function miniMap(interactive){
   const marks = DB.apartments.map(a=>{
-    const free = interactive ? isFree(a.id,S.search.from,S.search.to) : true;
+    const vis = !interactive || S.search.district==='all' || a.d===S.search.district;
+    const free = interactive ? (vis && isFree(a.id,S.search.from,S.search.to)) : true;
     const cls = interactive ? (free?'free':'busy') : 'free';
     const sel = S.selApt===a.id?' sel':'';
-    const w = 34 + String(a.price).length*0; 
     return `<g class="mk ${cls}${sel}" onclick="${interactive?`selectApt(${a.id})`:''}">
       <circle cx="${a.x}" cy="${a.y}" r="5"></circle>
       <rect x="${a.x-31}" y="${a.y-30}" width="62" height="20" rx="6"></rect>
       <text x="${a.x}" y="${a.y-16}" text-anchor="middle">${(a.price/1000).toFixed(1).replace('.',',')} т₽</text>
     </g>`;
   }).join('');
-  return `<div class="mapbox"><svg viewBox="0 0 600 430" role="img" aria-label="Карта центра Екатеринбурга с квартирами">
+  return `<div class="mapbox"><svg viewBox="0 0 600 430" role="img" aria-label="Схема юго-запада Екатеринбурга: районы Академический и Вторчермет с квартирами">
     <rect width="600" height="430" fill="#F0EDE3"/>
-    <path d="M330 0 C300 60 360 90 340 140 C320 190 250 200 240 260 C230 320 300 340 290 430" fill="none" stroke="#BCD3E2" stroke-width="26" stroke-linecap="round" opacity=".9"/>
-    <ellipse cx="330" cy="55" rx="55" ry="34" fill="#BCD3E2" opacity=".9"/>
-    <text x="332" y="60" text-anchor="middle" font-size="11" fill="#5E7A8C">Городской пруд</text>
-    <text x="255" y="228" text-anchor="middle" font-size="10" fill="#7E96A6" transform="rotate(-70 255 228)">р. Исеть</text>
+    <!-- Юго-Западный лесопарк между районами -->
+    <path d="M268 0 C300 80 250 160 296 250 C330 320 300 380 322 430 L400 430 C370 330 410 240 372 150 C345 80 370 30 356 0 Z" fill="#DCE8D8" opacity=".9"/>
+    <text x="332" y="200" text-anchor="middle" font-size="10" fill="#7C947A" transform="rotate(-78 332 200)">Юго-Западный лесопарк</text>
+    <!-- Академический: регулярная сетка кварталов -->
     <g stroke="#DDD6C6" stroke-width="3">
-      <line x1="60" y1="170" x2="560" y2="150"/><line x1="50" y1="250" x2="560" y2="235"/>
-      <line x1="70" y1="330" x2="560" y2="320"/><line x1="150" y1="60" x2="180" y2="410"/>
-      <line x1="270" y1="120" x2="285" y2="420"/><line x1="400" y1="60" x2="420" y2="410"/><line x1="490" y1="70" x2="505" y2="400"/>
+      <line x1="20" y1="70" x2="262" y2="60"/><line x1="14" y1="150" x2="272" y2="142"/>
+      <line x1="10" y1="222" x2="286" y2="216"/><line x1="16" y1="296" x2="300" y2="292"/>
+      <line x1="66" y1="30" x2="58" y2="330"/><line x1="152" y1="26" x2="146" y2="336"/><line x1="232" y1="30" x2="236" y2="340"/>
     </g>
-    <text x="455" y="145" font-size="10.5" fill="#9A937F">просп. Ленина</text>
-    <text x="455" y="230" font-size="10.5" fill="#9A937F">ул. Малышева</text>
-    <text x="452" y="315" font-size="10.5" fill="#9A937F">ул. Радищева</text>
-    <text x="288" y="412" font-size="10.5" fill="#9A937F" transform="rotate(-87 288 412)">ул. 8 Марта</text>
+    <text x="30" y="142" font-size="10.5" fill="#9A937F">ул. Вильгельма де Геннина</text>
+    <text x="30" y="214" font-size="10.5" fill="#9A937F">ул. Краснолесья</text>
+    <text x="30" y="288" font-size="10.5" fill="#9A937F">просп. Академика Сахарова</text>
+    <text x="156" y="40" font-size="10.5" fill="#9A937F" transform="rotate(87 156 40)">ул. Павла Шаманова</text>
+    <!-- Вторчермет: Титова, Селькоровская, Агрономическая -->
+    <g stroke="#DDD6C6" stroke-width="3">
+      <line x1="418" y1="120" x2="410" y2="428"/><line x1="380" y1="200" x2="590" y2="240"/>
+      <line x1="386" y1="300" x2="592" y2="286"/><line x1="392" y1="392" x2="588" y2="372"/>
+    </g>
+    <text x="424" y="150" font-size="10.5" fill="#9A937F" transform="rotate(88 424 150)">ул. Титова</text>
+    <text x="474" y="278" font-size="10.5" fill="#9A937F">ул. Агрономическая</text>
+    <text x="470" y="404" font-size="10.5" fill="#9A937F">ул. Селькоровская</text>
+    <!-- подписи районов и направление в центр -->
+    <text x="140" y="392" text-anchor="middle" font-size="15" font-weight="800" fill="#B9B29E" letter-spacing="3">АКАДЕМИЧЕСКИЙ</text>
+    <text x="494" y="86" text-anchor="middle" font-size="15" font-weight="800" fill="#B9B29E" letter-spacing="3">ВТОРЧЕРМЕТ</text>
+    <text x="548" y="24" text-anchor="end" font-size="10.5" fill="#9A937F">в центр ↗</text>
     ${marks}
   </svg>
-  ${interactive?`<div class="map-legend"><span><i style="background:var(--pine)"></i>свободна на даты</span><span><i style="background:#9AA1AD"></i>занята</span></div>`:''}
+  ${interactive?`<div class="map-legend"><span><i style="background:var(--pine)"></i>свободна на даты</span><span><i style="background:#9AA1AD"></i>занята / вне района</span></div>`:''}
   </div>`;
 }
 
@@ -445,14 +465,17 @@ function vLanding(){
   return `
   <section class="hero">
     <div>
-      <h1>Квартира на сутки в центре Екатеринбурга — заселение через 15 минут после оплаты</h1>
-      <p class="lead">Собственные квартиры без посредников. Выбираете даты на карте, оплачиваете онлайн — и получаете код от двери. Залог возвращаем в день выезда, все документы для отчётности выдаём автоматически.</p>
+      <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+        <span class="tag free">📍 Академический</span><span class="tag busy">📍 Вторчермет</span><span class="tag gray">Екатеринбург</span>
+      </div>
+      <h1>Квартира на сутки в Екатеринбурге — заселение через 15 минут после оплаты</h1>
+      <p class="lead">Собственные квартиры в Академическом и на Вторчермете, без посредников. Выбираете даты на карте, оплачиваете онлайн — и получаете код от двери. Залог возвращаем в день выезда, все документы для отчётности выдаём автоматически.</p>
       <div class="hero-cta">
         <button class="btn big" onclick="openAuth('up')">Подобрать квартиру</button>
         <button class="btn ghost big" onclick="openAuth('in')">Войти в кабинет</button>
       </div>
       <div class="hero-facts">
-        <div><b>6</b><span>квартир в центре</span></div>
+        <div><b>6</b><span>квартир в 2 районах</span></div>
         <div><b>от 2 500 ₽</b><span>за сутки</span></div>
         <div><b>9:00–21:00</b><span>${DB.settings.mainPhone}</span></div>
       </div>
@@ -462,7 +485,7 @@ function vLanding(){
 
   <section class="sect" id="about">
     <h2>Кто мы</h2>
-    <p style="max-width:72ch;color:var(--muted)">Ключи24 — семейный бизнес посуточной аренды. Мы сами владеем каждой квартирой, сами следим за чистотой и ремонтом, поэтому фото в каталоге совпадают с реальностью. Работаем официально как ИП: онлайн-оплата через ЮKassa, кассовый чек приходит сразу после платежа, для командировочных готовим акты и счета.</p>
+    <p style="max-width:72ch;color:var(--muted)">Ключи24 — семейный бизнес посуточной аренды в Екатеринбурге. Наши квартиры в двух районах: в новом Академическом — с современными домами и закрытыми дворами, и на Вторчермете — рядом с промышленными площадками и Южным автовокзалом, что удобно командировочным. Мы сами владеем каждой квартирой, сами следим за чистотой и ремонтом, поэтому фото в каталоге совпадают с реальностью. Работаем официально как ИП: онлайн-оплата через ЮKassa, кассовый чек приходит сразу после платежа, для командировочных готовим акты и счета.</p>
   </section>
 
   <section class="sect" id="how">
@@ -485,7 +508,7 @@ function vLanding(){
   </section>
 
   <footer><div class="foot">
-    <div><b style="color:var(--ink)">Ключи24</b> · ИП Алимпиев И.А. · г. Екатеринбург<br>Единый номер: ${DB.settings.mainPhone}, ежедневно ${DB.settings.workFrom}–${DB.settings.workTo}</div>
+    <div><b style="color:var(--ink)">Ключи24</b> · ИП Ключников А.В. · г. Екатеринбург, районы Академический и Вторчермет<br>Единый номер: ${DB.settings.mainPhone}, ежедневно ${DB.settings.workFrom}–${DB.settings.workTo}</div>
     <div>Оплата: ЮKassa (карты, СБП) · Чеки по 54-ФЗ<br>Это демонстрационный прототип интерфейса</div>
   </div></footer>`;
 }
@@ -509,20 +532,21 @@ function vClient(){
   return cSearch();
 }
 function doSearch(){
-  const f=document.getElementById('sf').value, t=document.getElementById('st').value;
-  if(f && t && P(t)>P(f)){ S.search={from:f,to:t}; S.selApt=null; render(); }
+  const f=document.getElementById('sf').value, t=document.getElementById('st').value, d=document.getElementById('sd').value;
+  if(f && t && P(t)>P(f)){ S.search={from:f,to:t,district:d}; S.selApt=null; render(); }
   else toast('Дата выезда должна быть позже даты заезда');
 }
 function selectApt(id){ S.selApt = S.selApt===id?null:id; render();
   const el=document.getElementById('apt-'+id); if(el) el.scrollIntoView({block:'nearest',behavior:'smooth'}); }
 
 function cSearch(){
-  const {from,to}=S.search; const n=nights(from,to);
-  const list = DB.apartments.map(a=>{
+  const {from,to,district}=S.search; const n=nights(from,to);
+  const shown = DB.apartments.filter(a=>district==='all'||a.d===district);
+  const list = shown.map(a=>{
     const free=isFree(a.id,from,to);
     return `<div class="apt ${S.selApt===a.id?'sel':''} ${free?'':'off'}" id="apt-${a.id}" onclick="selectApt(${a.id})">
       <div class="ph" style="background:${a.g}">${a.ic}</div>
-      <div><h4>${a.addr}</h4><div class="meta">${a.rooms} · залог ${RUB(a.dep)}</div>
+      <div><h4>${a.addr}</h4><div class="meta">${a.d} · ${a.rooms} · залог ${RUB(a.dep)}</div>
         <div style="margin-top:6px">${free?'<span class="tag free">Свободна на ваши даты</span>':'<span class="tag gray">Занята на выбранные даты</span>'}</div></div>
       <div class="price" style="text-align:right"><b>${RUB(a.price)}</b><br><span>за сутки · ${RUB(a.price*n)} за ${n} ноч.</span><br>
         <button class="btn sm" style="margin-top:8px" ${free?'':'disabled'} onclick="event.stopPropagation();openBooking(${a.id})">Забронировать</button></div>
@@ -530,7 +554,12 @@ function cSearch(){
   }).join('');
   return `<div class="wrap">
     <div class="card" style="margin-bottom:16px"><div class="bd" style="display:flex;gap:14px;align-items:end;flex-wrap:wrap">
-      <div class="frow" style="margin:0"><label>Город</label><select disabled style="min-width:160px"><option>Екатеринбург</option></select></div>
+      <div class="frow" style="margin:0"><label>Город</label><select disabled style="min-width:140px"><option>Екатеринбург</option></select></div>
+      <div class="frow" style="margin:0"><label>Район</label><select id="sd" style="min-width:150px">
+        <option value="all" ${district==='all'?'selected':''}>Все районы</option>
+        <option value="Академический" ${district==='Академический'?'selected':''}>Академический</option>
+        <option value="Вторчермет" ${district==='Вторчермет'?'selected':''}>Вторчермет</option>
+      </select></div>
       <div class="frow" style="margin:0"><label>Заезд</label><input type="date" id="sf" value="${from}" min="${iso(TODAY)}"></div>
       <div class="frow" style="margin:0"><label>Выезд</label><input type="date" id="st" value="${to}" min="${iso(addD(TODAY,1))}"></div>
       <button class="btn" onclick="doSearch()">Показать свободные</button>
@@ -634,7 +663,7 @@ function cMy(){
     ${my.map(b=>{const a=apt(b.apt);return `<div class="card"><div class="bd">
       <div style="display:flex;gap:13px;align-items:center;flex-wrap:wrap">
         <div class="ph" style="background:${a.g};width:74px;height:56px;font-size:22px">${a.ic}</div>
-        <div style="flex:1;min-width:200px"><b>${a.addr}</b><div class="hint">Бронь №${b.id} · ${fmtD(b.from)} — ${fmtD(b.to)} · ${nights(b.from,b.to)} ноч.</div></div>
+        <div style="flex:1;min-width:200px"><b>${a.addr}</b><div class="hint">${a.d} · Бронь №${b.id} · ${fmtD(b.from)} — ${fmtD(b.to)} · ${nights(b.from,b.to)} ноч.</div></div>
         ${bookingStatus(b)}
       </div>
       ${depBlock(b,true)}
@@ -674,7 +703,7 @@ function openChatModal(bid){
 function sendChat(bid){
   const inp=document.getElementById('chatTxt'); const txt=inp.value.trim(); if(!txt)return;
   const isStaff=S.role!=='client';
-  const name = isStaff ? ({manager:'Марина (менеджер)',admin:'Игорь (администратор)',cleaner:'Тамара (уборщица)',repair:'Виктор (ремонтник)'}[S.role]||'Сотрудник') : 'Дмитрий';
+  const name = isStaff ? ({manager:'Марина (менеджер)',admin:'Артём (администратор)',cleaner:'Тамара (уборщица)',repair:'Виктор (ремонтник)'}[S.role]||'Сотрудник') : 'Дмитрий';
   chatPush(bid, isStaff?'staff':'client', name, txt);
   notify(isStaff?'client':'manager','Новое сообщение в чате брони №'+bid);
   openChatModal(bid); renderHeader();
@@ -687,7 +716,7 @@ function openDoc(id){
   <div class="m-bd">
     <div class="docv">
       <h4>${d.title}</h4>
-      <div class="hint">ИП Алимпиев Игорь Александрович · ИНН 66••••••••34 · г. Екатеринбург</div>
+      <div class="hint">ИП Ключников Артём Викторович · ИНН 66••••••••77 · г. Екатеринбург</div>
       <div class="sep"></div>
       <div class="kv"><span>Услуга</span><b>Проживание: ${a.addr}</b></div>
       <div class="kv"><span>Период</span><b>${fmtD(b.from)} — ${fmtD(b.to)}</b></div>
@@ -754,7 +783,10 @@ function markPaid(bid){
   const a=apt(b.apt); const sum=a.price*nights(b.from,b.to)+a.dep;
   DB.payments.unshift({id:DB.seq.pay++, d:fmtDY(iso(TODAY)), type:'Оплата брони №'+bid, amount:sum, method:'СБП · ЮKassa', dir:'+'});
   DB.docs.unshift({id:DB.seq.doc++, booking:bid, type:'Чек', title:'Кассовый чек · оплата брони №'+bid, d:fmtDY(iso(TODAY)), sum});
-  toast('Оплата по брони №'+bid+' получена'); render();
+  DB.cleanTasks.push({id:DB.seq.task++, apt:b.apt, type:'Подготовка к заезду', due:fmtD(b.from)+' до 13:00', status:'new', by:null, seenAt:null, doneAt:null, photos:0, booking:bid});
+  notify('cleaner','Новая задача: подготовка к заезду — '+a.addr+', '+fmtD(b.from));
+  notify('admin','Оплачена бронь №'+bid+' · '+RUB(sum)+' (ЮKassa)');
+  toast('Оплата по брони №'+bid+' получена, задача уборки создана'); render();
 }
 function mReq(){
   const days=[...Array(10)].map((_,i)=>iso(addD(TODAY,i)));
@@ -803,7 +835,7 @@ function vCleaner(){
       :`<span class="hint">${t.doneAt} · фото: ${t.photos}</span>`;
     return `<div class="apt" style="grid-template-columns:74px 1fr auto">
       <div class="ph" style="background:${a.g};width:74px;height:56px;font-size:22px">${a.ic}</div>
-      <div><b>${a.addr}</b><div class="hint">${t.type} · ${t.due} · бронь №${t.booking}</div><div style="margin-top:5px">${st}</div></div>
+      <div><b>${a.addr}</b><div class="hint">${a.d} · ${t.type} · ${t.due} · бронь №${t.booking}</div><div style="margin-top:5px">${st}</div></div>
       <div style="text-align:right">${btn}</div></div>`;
   };
   return `<div class="wrap"><div class="grid" style="max-width:760px">
@@ -857,7 +889,7 @@ function vAdmin(){
 function aBoard(){
   return `<div class="wrap">
     <div class="board">${DB.apartments.map(a=>{const s=aptState(a);
-      return `<div class="bcard ${s.cls}"><h4>${a.addr}</h4>${s.tag}
+      return `<div class="bcard ${s.cls}"><h4>${a.addr} <span style="font-weight:600;color:var(--muted);font-size:12px">· ${a.d}</span></h4>${s.tag}
         <div class="st">${s.line}</div><div class="sub">${s.sub}</div></div>`;}).join('')}
     </div>
     <div class="card" style="margin-top:16px"><div class="hd"><h3>Задачи уборки — контроль</h3></div><div class="bd">
@@ -947,7 +979,7 @@ function depReturn(bid){
   DB.payments.unshift({id:DB.seq.pay++, d:fmtDY(iso(TODAY)), type:'Возврат залога №'+bid, amount:rest, method:'ЮKassa · возврат', dir:'−'});
   DB.docs.unshift({id:DB.seq.doc++, booking:bid, type:'Чек', title:'Чек возврата · залог по брони №'+bid, d:fmtDY(iso(TODAY)), sum:rest});
   if(b.client){ notify('client','Залог по брони №'+bid+' возвращён: '+RUB(rest)+'. Чек — в документах.');
-    chatPush(bid,'staff','Игорь (администратор)','Залог '+RUB(rest)+' возвращён на ваш способ оплаты. Спасибо, что выбрали нас!'); }
+    chatPush(bid,'staff','Артём (администратор)','Залог '+RUB(rest)+' возвращён на ваш способ оплаты. Спасибо, что выбрали нас!'); }
   render(); toast('Возврат '+RUB(rest)+' проведён через ЮKassa (демо)');
 }
 function depDeductForm(bid){
@@ -964,7 +996,7 @@ function depDeductApply(bid){
   b.dep.deductions.push({sum:s,reason:r,date:fmtDY(iso(TODAY))});
   DB.docs.unshift({id:DB.seq.doc++, booking:bid, type:'Акт', title:'Акт удержания из залога · бронь №'+bid, d:fmtDY(iso(TODAY)), sum:s});
   if(b.client){ notify('client','Из залога по брони №'+bid+' удержано '+RUB(s)+': '+r+'. Подробности в чате.');
-    chatPush(bid,'staff','Игорь (администратор)','Из залога удержано '+RUB(s)+'. Причина: '+r+'. Акт с фото — в разделе «Документы». Если не согласны — обсудим здесь.'); }
+    chatPush(bid,'staff','Артём (администратор)','Из залога удержано '+RUB(s)+'. Причина: '+r+'. Акт с фото — в разделе «Документы». Если не согласны — обсудим здесь.'); }
   closeModal(); render(); toast('Вычет оформлен, клиент уведомлён');
 }
 function surchargeForm(bid){
@@ -981,7 +1013,7 @@ function surchargeApply(bid){
   b.dep.surcharges.push({sum:s,reason:r,paid:false});
   DB.docs.unshift({id:DB.seq.doc++, booking:bid, type:'Счёт', title:'Счёт на доплату · бронь №'+bid, d:fmtDY(iso(TODAY)), sum:s});
   if(b.client){ notify('client','Доначисление по брони №'+bid+': '+RUB(s)+' — '+r+'. Оплатить можно в «Мои бронирования».');
-    chatPush(bid,'staff','Игорь (администратор)','Ущерб превысил залог. Выставлен счёт на '+RUB(s)+': '+r+'. Кнопка оплаты — в карточке брони.'); }
+    chatPush(bid,'staff','Артём (администратор)','Ущерб превысил залог. Выставлен счёт на '+RUB(s)+': '+r+'. Кнопка оплаты — в карточке брони.'); }
   closeModal(); render(); toast('Счёт выставлен, клиент уведомлён');
 }
 
@@ -1025,6 +1057,67 @@ function aTeam(){
   </table>
   <p class="hint" style="margin-top:10px">Личный номер менеджера используется облачной АТС как цель переадресации в его смену. Уборщиц и ремонтников может быть несколько — задачи берутся из общего пула.</p>
   </div></div></div>`;
+}
+
+/* ================= АРХИТЕКТУРА И ТСО ================= */
+function vArch(){
+  const row=(what,svc,cost)=>`<tr><td>${what}</td><td>${svc}</td><td style="white-space:nowrap;text-align:right;font-weight:700">${cost}</td></tr>`;
+  return `<div class="wrap"><div class="grid" style="max-width:980px">
+
+    <div class="card"><div class="hd"><h3>Схема развёртывания в Яндекс Облаке</h3><span class="hint">боевая версия; текущий прототип — один HTML-файл без бэкенда</span></div>
+    <div class="bd">
+      <div class="cols3">
+        <div class="step"><div class="n">☁</div><h3>Ядро в Яндекс Облаке</h3>
+          <p>Фронтенд (SPA) — <b>Object Storage + CDN</b>.<br>
+          API — <b>API Gateway → Cloud Functions</b> (Node.js/Python), почти нулевая цена на малой нагрузке.<br>
+          Данные — <b>Managed PostgreSQL</b>: брони, квартиры, залоги, задачи, чаты.<br>
+          Фотоотчёты уборки — Object Storage.<br>
+          Крон и очереди — <b>Cloud Functions триггеры + Message Queue</b> (сверка расписания АТС, напоминания о выезде).<br>
+          Секреты — Lockbox, SSL — Certificate Manager, логи — Cloud Logging.</p></div>
+        <div class="step"><div class="n">🔌</div><h3>Внешние сервисы</h3>
+          <p><b>ЮKassa</b> — приём оплат (карты, СБП) на счёт ИП, возвраты залога, вебхуки статусов платежей.<br>
+          <b>Облачная касса 54-ФЗ</b> (решение ЮKassa или АТОЛ Онлайн + ОФД) — чеки при оплате, возврате, доначислении.<br>
+          <b>Облачная АТС</b> (Novofon / Телфин) — единый городской номер и переадресация на менеджеров по сменам.<br>
+          <b>SMS-шлюз</b> (SMS Aero / SMSC) — коды входа, ссылки на оплату, код кейбокса.<br>
+          <b>Яндекс Карты JS API</b> — карта квартир (на старте хватает бесплатного лимита; альтернатива без лимитов — Leaflet + OSM).<br>
+          E-mail — Yandex Cloud Postbox.</p></div>
+        <div class="step"><div class="n">⚙</div><h3>Механика ключевых сценариев</h3>
+          <p><b>Оплата:</b> виджет ЮKassa на странице брони → вебхук «платёж успешен» в API Gateway → функция подтверждает бронь, касса пробивает чек, клиенту SMS + уведомление в ЛК.<br>
+          <b>Телефония:</b> бэкенд по графику смен через API АТС переустанавливает цель переадресации на личный номер менеджера; вне рабочего времени сценарий АТС ведёт на номер администратора; страхующий крон сверяет правило каждые 5 минут.<br>
+          <b>Залог:</b> уборщица закрывает задачу с фотоотчётом → админ жмёт «вернуть» → API-возврат ЮKassa (полный или за вычетом удержаний) + чек возврата; доначисление сверх залога — счёт с кнопкой оплаты в ЛК.</p></div>
+      </div>
+    </div></div>
+
+    <div class="card"><div class="hd"><h3>Себестоимость владения</h3><span class="hint">оценка для 6 квартир и текущего объёма звонков</span></div>
+    <div class="bd"><table class="t">
+      <tr><th>Статья</th><th>Сервис</th><th style="text-align:right">₽/мес</th></tr>
+      ${row('Фронтенд-хостинг','Object Storage + CDN','100–300')}
+      ${row('Бэкенд','API Gateway + Cloud Functions','300–1 000')}
+      ${row('База данных','Managed PostgreSQL (2 vCPU burstable, 10 ГБ)','2 500–4 000')}
+      ${row('Логи, мониторинг, секреты','Cloud Logging + Monitoring + Lockbox','300–500')}
+      ${row('Телефония','Облачная АТС: номер, сценарии, минуты переадресации','1 500–3 500')}
+      ${row('Онлайн-касса 54-ФЗ','Аренда облачной кассы + ОФД','2 200–3 200')}
+      ${row('SMS-уведомления','~3–4 ₽ за SMS','500–1 500')}
+      ${row('E-mail','Yandex Cloud Postbox','~100')}
+      ${row('Карта на сайте','Яндекс Карты JS API (бесплатный лимит) / Leaflet','0')}
+      ${row('Домен и SSL','домен ~2 000 ₽/год, сертификат Let’s Encrypt','~200')}
+      <tr><td colspan="2" style="font-weight:800">Итого фиксированных расходов</td><td style="text-align:right;font-weight:800">≈ 8 000–14 000</td></tr>
+    </table>
+    <p class="hint" style="margin-top:10px">Плюс комиссия эквайринга ЮKassa с оборота: карты 2,8–3,5&nbsp;%, СБП ≈ 0,7&nbsp;% (при обороте 300&nbsp;тыс&nbsp;₽/мес это ~3–10&nbsp;тыс&nbsp;₽). Разовая разработка и подключения (договор с ЮKassa, регистрация кассы в ФНС, портирование номера в АТС) — отдельно от стоимости владения.</p>
+    </div></div>
+
+    <div class="card"><div class="hd"><h3>Что нужно оформить до запуска</h3></div>
+    <div class="bd"><table class="t">
+      <tr><th></th><th>Шаг</th><th>Зачем</th></tr>
+      <tr><td>1</td><td>Договор ИП с ЮKassa</td><td>приём онлайн-оплат и возвраты залога на расчётный счёт ИП администратора</td></tr>
+      <tr><td>2</td><td>Облачная касса + регистрация в ФНС, договор с ОФД</td><td>фискальные чеки по 54-ФЗ при каждой оплате и возврате</td></tr>
+      <tr><td>3</td><td>Городской номер в облачной АТС</td><td>единая точка входа звонков и программное управление переадресацией</td></tr>
+      <tr><td>4</td><td>Аккаунт Яндекс Облака на ИП, платёжный аккаунт</td><td>вся инфраструктура сервиса в одном биллинге</td></tr>
+      <tr><td>5</td><td>Регистрация SMS-имени отправителя</td><td>SMS приходят от имени «Kluchi24», а не с безликого номера</td></tr>
+      <tr><td>6</td><td>Политика персональных данных, уведомление РКН</td><td>сервис хранит ФИО и телефоны клиентов</td></tr>
+    </table></div></div>
+
+  </div></div>`;
 }
 
 /* ================= МОДАЛКИ ================= */
