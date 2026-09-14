@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ключи24 — посуточная аренда квартир · Академический и Вторчермет</title>
-<meta name="description" content="Прототип сервиса посуточной аренды квартир в Екатеринбурге: районы Академический и Вторчермет. Демонстрационный интерфейс без привязки к живым сервисам.">
+<meta name="robots" content="noindex, nofollow">
+<title>Ключи24 — посуточная аренда квартир в Екатеринбурге</title>
+<meta name="description" content="Прототип сервиса посуточной аренды квартир в Екатеринбурге: 18 квартир в районах Академический, Мичуринский, Уктус и Вторчермет. Демонстрационный интерфейс без привязки к живым сервисам.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2317171C'/%3E%3Ccircle cx='11' cy='21' r='5' fill='none' stroke='%23fff' stroke-width='2.4'/%3E%3Cpath d='M14.6 17.4 26 6M21.5 10.5l3 3M18.5 13.5l3 3' stroke='%23fff' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="preload" href="fonts/SNPro-Regular.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/SNPro-Bold.woff2" as="font" type="font/woff2" crossorigin>
@@ -240,7 +241,7 @@ table.t tbody tr:hover{background:var(--paper)}
 .legend i{width:9px;height:9px;border-radius:99px;flex-shrink:0}
 .split .mapwrap{border:1px solid var(--line);border-radius:var(--r-card);overflow:hidden;background:var(--white)}
 .split .mapbox{background:#EBEBE8}
-.split .mapbox svg.plot{min-height:330px;max-height:380px}
+.split .mapbox svg.plot{min-height:auto;max-height:none;background:#EBEBE8}
 .split .mapcard{position:static;transform:none;width:auto;display:grid;grid-template-columns:110px minmax(0,1fr);
   gap:2px 12px;padding:12px;border-radius:0;box-shadow:none;border-top:1px solid var(--line-2);animation:pop3 .3s var(--ez)}
 @keyframes pop3{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
@@ -274,9 +275,10 @@ table.t tbody tr:hover{background:var(--paper)}
 .fakein{display:flex;align-items:center;gap:8px;background:var(--white);border-radius:var(--r-pill);padding:9px 13px;
   font-size:11.5px;color:var(--ink-3);box-shadow:var(--sh-s);margin-bottom:8px;align-self:flex-start;max-width:100%}
 .wide-art{position:relative;height:170px;border-radius:14px;overflow:hidden;background:var(--paper)}
-.wide-art .dots{position:absolute;inset:0;background-image:radial-gradient(#D6D6D0 1.1px,transparent 1.3px);background-size:11px 11px;
-  -webkit-mask-image:radial-gradient(ellipse 60% 70% at 32% 50%,#000 30%,transparent 100%);
-  mask-image:radial-gradient(ellipse 60% 70% at 32% 50%,#000 30%,transparent 100%)}
+.wide-art .dots{position:absolute;inset:0;
+  background-image:radial-gradient(ellipse 62% 72% at 32% 50%,rgba(246,246,243,0) 30%,var(--paper) 100%),
+    radial-gradient(#D6D6D0 1.1px,transparent 1.3px);
+  background-size:100% 100%,11px 11px}
 .wide-art .route{position:absolute;left:0;top:0;width:58%;height:100%}
 .wide-art .pricepill{position:absolute;left:19%;top:22%;background:var(--accent);color:#fff;font-size:11px;font-weight:600;
   padding:5px 10px;border-radius:var(--r-pill);box-shadow:var(--sh-s)}
@@ -487,7 +489,7 @@ footer{border-top:1px solid var(--line-2);margin-top:clamp(40px,5vw,70px);backgr
 </div>
 <div class="metafoot">
   <span>Прототип интерфейса · Ключи24</span>
-  <span>Екатеринбург · Академический и Вторчермет</span>
+  <span>Екатеринбург · 18 квартир в 4 районах</span>
   <span>2026</span>
 </div>
 <div id="modal-root" onclick="if(event.target===this)closeModal()"></div>
@@ -615,9 +617,13 @@ function planCore(pl, opts){
   return `
     <path d="${pl.outer}" fill="#E3E3DF"/>
     <path d="${pl.outer}" fill="url(#floorGrad)"/>
-    <g filter="url(#wallShadow)" opacity=".55" transform="translate(7 8)">
-      <path d="${pl.outer}" fill="none" stroke="#1A1A1A" stroke-width="${strong?4.6:3.4}"/>
-      ${pl.inner.map(d=>`<path d="${d}" stroke="#1A1A1A" stroke-width="${strong?2.8:2.2}"/>`).join('')}
+    <g opacity=".13" transform="translate(7 8)">
+      <path d="${pl.outer}" fill="none" stroke="#1A1A1A" stroke-width="${strong?7:5}"/>
+      ${pl.inner.map(d=>`<path d="${d}" stroke="#1A1A1A" stroke-width="${strong?5:4}"/>`).join('')}
+    </g>
+    <g opacity=".10" transform="translate(4 4.5)">
+      <path d="${pl.outer}" fill="none" stroke="#1A1A1A" stroke-width="${strong?5:3.8}"/>
+      ${pl.inner.map(d=>`<path d="${d}" stroke="#1A1A1A" stroke-width="${strong?3.4:2.6}"/>`).join('')}
     </g>
     <g fill="none" stroke="#8E8E8A" stroke-width=".8">${pl.furn.map(d=>`<path d="${d}"/>`).join('')}</g>
     ${walls}${win}${doors}${rooms}`;
@@ -625,8 +631,7 @@ function planCore(pl, opts){
 const PLAN_DEFS = `<defs>
   <linearGradient id="floorGrad" x1="0" y1="0" x2="1" y2="1">
     <stop offset="0" stop-color="#EDEDEA"/><stop offset="1" stop-color="#D9D9D4"/></linearGradient>
-  <filter id="wallShadow" x="-20%" y="-20%" width="150%" height="150%">
-    <feGaussianBlur stdDeviation="2.6"/></filter>
+
 </defs>`;
 /* card: чертёж с осями и рельефом; thumb: компактно; cover: под круглый маркер */
 function planSVG(a, cls, mode){
@@ -677,66 +682,136 @@ const nightWord = n => { const a=n%10, b=n%100;
   if(a===1&&b!==11) return 'ночь'; if(a>=2&&a<=4&&(b<12||b>14)) return 'ночи'; return 'ночей'; };
 
 const DISTRICTS = {
-  'Академический':{key:'ak', note:'новые дома, закрытые дворы, 20 минут до центра'},
-  'Вторчермет':{key:'vt', note:'рядом Южный автовокзал и промплощадки'}
+  'Академический':{note:'новые кварталы, закрытые дворы, 20 минут до центра'},
+  'Мичуринский':  {note:'тихий район рядом с Академическим'},
+  'Уктус':        {note:'юго-восток, рядом горнолыжный комплекс и Ботаника'},
+  'Вторчермет':   {note:'рядом Южный автовокзал и промплощадки'}
 };
+
+/* Праздничные даты: цена как в выходной. Список на 2026 год, требует ежегодного обновления. */
+const HOLIDAYS = new Set([
+  '2026-01-01','2026-01-02','2026-01-03','2026-01-04','2026-01-05','2026-01-06','2026-01-07','2026-01-08',
+  '2026-02-23','2026-03-08','2026-05-01','2026-05-09','2026-06-12','2026-11-04',
+  '2027-01-01','2027-01-02','2027-01-03','2027-01-04','2027-01-05','2027-01-06','2027-01-07','2027-01-08'
+]);
+const isWeekendDay = ds => { const w = dow1(P(ds)); return w===5 || w===6; };
+const isHoliday    = ds => HOLIDAYS.has(ds);
+/* Цена ночи: пятница, суббота и праздники — с надбавкой выходного дня. */
+function nightPrice(a, ds){
+  return a.price + ((isWeekendDay(ds)||isHoliday(ds)) ? DB.settings.weekendUp : 0);
+}
+/* Стоимость проживания посуточно, с разбивкой по типам ночей. */
+function stayCost(a, from, to){
+  let sum=0, base=0, up=0;
+  for(let i=0;i<nights(from,to);i++){
+    const ds=iso(addD(P(from),i));
+    sum += nightPrice(a,ds);
+    if(isWeekendDay(ds)||isHoliday(ds)) up++; else base++;
+  }
+  return {sum, base, up};
+}
 
 const DB = {
   users:{
-    admin:{name:'Артём Ключников', role:'Администратор', phone:'+7 912 000-10-10'},
-    m1:{name:'Марина Ковалёва', role:'Менеджер', phone:'+7 902 111-22-33'},
-    m2:{name:'Олег Дементьев', role:'Менеджер', phone:'+7 902 444-55-66'},
-    cl1:{name:'Тамара Гурьева', role:'Уборщица', phone:'+7 908 700-11-22'},
-    cl2:{name:'Светлана Рощина', role:'Уборщица', phone:'+7 908 700-33-44'},
-    rp1:{name:'Виктор Санин', role:'Ремонтник', phone:'+7 904 200-55-66'},
+    admin:{name:'Кристина Белоконь', role:'Владелец', phone:'+7 922 228-60-14'},
+    m1:{name:'Менеджер смены А', role:'Менеджер', phone:'+7 922 228-60-14'},
+    m2:{name:'Менеджер смены Б', role:'Менеджер', phone:'+7 999 286-95-56'},
+    cl1:{name:'Горничная 1', role:'Горничная', phone:'—'},
+    cl2:{name:'Горничная 2', role:'Горничная', phone:'—'},
+    rp1:{name:'Мастер', role:'Ремонтник', phone:'—'},
     cli:{name:'Дмитрий Соколов', role:'Клиент', phone:'+7 912 345-67-89', email:'d.sokolov@mail.ru'}
   },
   settings:{
-    city:'Екатеринбург', mainPhone:'+7 343 290-00-24',
-    workFrom:'09:00', workTo:'21:00',
-    days:{1:'m1',2:'m2',3:'m1',4:'m2',5:'m1',6:'m2',7:'m1'}
+    city:'Екатеринбург',
+    mainPhone:'+7 922 228-60-14',
+    email:'kristinabelak38@gmail.com',
+    roundClock:true,                 // приём звонков круглосуточный
+    shiftPattern:2,                  // смены 2 через 2
+    shiftAnchor:'2026-09-01',        // от этой даты считается чередование
+    weekendUp:500,                   // надбавка выходного дня и праздников — значение условное
+    depositDefault:3000,
+    refundShare:70,                  // при отмене за сутки возвращается 70 %
+    extraGuest:500,                  // доплата за 3-го и последующего гостя
+    lateOutHour:300,                 // поздний выезд, за час
+    since:2018,
+    guestsServed:'1500—2000',
+    legal:{
+      name:'ИП Белоконь Кристина Хвычаевна',
+      short:'ИП Белоконь К.Х.',
+      inn:'667471763184',
+      ogrnip:'324665800196522',
+      tax:'Патент',
+      bank:'Сбербанк (бизнес-счёт)'
+    }
   },
+  /* Номера квартир заказчик передал, но в публичной сборке они не хранятся:
+     связка «адрес + кейбокс у двери» — подсказка для взлома. Держать их следует
+     на сервере и показывать только в инструкции заселения оплатившему гостю. */
   apartments:[
-    {id:1, d:'Академический', addr:'Вильгельма де Геннина, 33', rooms:'1-комнатная · 38 м² · 5/18 этаж', m2:38,
-     plan:'k1', price:2900, dep:3000, x:112, y:112, sleeps:3},
-    {id:2, d:'Академический', addr:'Краснолесья, 97', rooms:'2-комнатная · 54 м² · 7/16 этаж', m2:54,
-     plan:'k2', price:3900, dep:5000, x:92, y:246, sleeps:5},
-    {id:3, d:'Академический', addr:'Павла Шаманова, 24', rooms:'Студия · 29 м² · 3/22 этаж', m2:29,
-     plan:'studio', price:2500, dep:3000, x:196, y:180, sleeps:2},
-    {id:4, d:'Вторчермет', addr:'Титова, 17', rooms:'2-комнатная · 58 м² · 4/9 этаж', m2:58,
-     plan:'k2', price:4200, dep:5000, x:432, y:214, sleeps:5},
-    {id:5, d:'Вторчермет', addr:'Агрономическая, 30', rooms:'1-комнатная · 41 м² · 6/10 этаж', m2:41,
-     plan:'k1', price:3100, dep:3000, x:516, y:292, sleeps:3},
-    {id:6, d:'Вторчермет', addr:'Селькоровская, 76', rooms:'3-комнатная · 76 м² · 2/5 этаж', m2:76,
-     plan:'k3', price:5500, dep:7000, x:460, y:360, sleeps:7}
+    {id:1, d:'Академический', addr:'Парина 41', rooms:'Студия', plan:'studio', m2:20, fl:12, fls:14,
+     beds:'2', sleeps:2, price:3000, dep:3000, wifi:true, wash:true, park:true, lat:56.786399, lon:60.501346},
+    {id:2, d:'Академический', addr:'Парина 43', rooms:'Студия', plan:'studio', m2:20, fl:13, fls:14,
+     beds:'2', sleeps:2, price:3000, dep:3000, wifi:true, wash:true, park:true, lat:56.787075, lon:60.500106},
+    {id:3, d:'Академический', addr:'Рябинина 49/а', rooms:'1-комнатная', plan:'k1', m2:51, fl:16, fls:18,
+     beds:'2+2+1+1', sleeps:6, price:4000, dep:3000, wifi:true, wash:true, park:true, lat:56.786582, lon:60.496378},
+    {id:4, d:'Академический', addr:'Рябинина 49/а', rooms:'1-комнатная', plan:'k1', m2:51, fl:15, fls:18,
+     beds:'2+2+1+1', sleeps:6, price:4000, dep:3000, wifi:true, wash:true, park:true, lat:56.786582, lon:60.496378},
+    {id:5, d:'Академический', addr:'Ландау 38', rooms:'2-комнатная', plan:'k2', m2:55, fl:4, fls:16,
+     beds:'1+1+1+1+2', sleeps:6, price:5000, dep:3000, wifi:true, wash:true, park:true, lat:56.781118, lon:60.506646},
+    {id:6, d:'Академический', addr:'Ландау 14/3', rooms:'1-комнатная', plan:'k1', m2:50, fl:17, fls:18,
+     beds:'2+2+1+1', sleeps:6, price:3500, dep:3000, wifi:true, wash:true, park:true, lat:56.772295, lon:60.523444},
+    {id:7, d:'Мичуринский', addr:'Савкова 44/А', rooms:'1-комнатная', plan:'k1', m2:36, fl:4, fls:8,
+     beds:'2+2+1+1', sleeps:6, price:3500, dep:3000, wifi:true, wash:true, park:true, lat:56.793104, lon:60.483101},
+    {id:8, d:'Уктус', addr:'Новостроя 9', rooms:'1-комнатная', plan:'k1', m2:41, fl:23, fls:26,
+     beds:'2+2+1+1', sleeps:6, price:3500, dep:3000, wifi:true, wash:true, park:true, lat:56.771684, lon:60.634539},
+    {id:9, d:'Уктус', addr:'Новостроя 9', rooms:'1-комнатная', plan:'k1', m2:36, fl:14, fls:26,
+     beds:'2+2+1+1', sleeps:6, price:3500, dep:3000, wifi:true, wash:true, park:true, lat:56.771684, lon:60.634539},
+    {id:10, d:'Уктус', addr:'Новостроя 5', rooms:'Студия', plan:'studio', m2:25, fl:15, fls:26,
+     beds:'2+2', sleeps:4, price:3000, dep:3000, wifi:true, wash:true, park:true, lat:56.771693, lon:60.633263},
+    {id:11, d:'Вторчермет', addr:'Газетная 34', rooms:'1-комнатная', plan:'k1', m2:31, fl:2, fls:5,
+     beds:'2+2+1', sleeps:5, price:3000, dep:3000, wifi:false, wash:true, park:true, lat:56.763416, lon:60.604023},
+    {id:12, d:'Вторчермет', addr:'Братская 27/3', rooms:'2-комнатная', plan:'k2', m2:70, fl:23, fls:24,
+     beds:'2+2+2+2+2+2+2', sleeps:14, price:5000, dep:3000, wifi:true, wash:true, park:true, lat:56.776409, lon:60.596765},
+    {id:13, d:'Вторчермет', addr:'Зенитчиков 14', rooms:'1-комнатная', plan:'k1', m2:29, fl:2, fls:5,
+     beds:'2+2', sleeps:4, price:3000, dep:3000, wifi:true, wash:true, park:true, lat:56.775304, lon:60.597995},
+    {id:14, d:'Вторчермет', addr:'Палисадная 2', rooms:'2-комнатная', plan:'k2', m2:44, fl:2, fls:5,
+     beds:'2+2+2+1', sleeps:7, price:3500, dep:3000, wifi:false, wash:true, park:true, lat:56.773814, lon:60.597412},
+    {id:15, d:'Вторчермет', addr:'Симферопольская 31', rooms:'2-комнатная', plan:'k2', m2:45, fl:4, fls:5,
+     beds:'2+2+2+2', sleeps:8, price:4000, dep:3000, wifi:true, wash:true, park:true, lat:56.770579, lon:60.588213},
+    {id:16, d:'Вторчермет', addr:'Симферопольская 34', rooms:'1-комнатная', plan:'k1', m2:30, fl:1, fls:5,
+     beds:'2+1+1', sleeps:4, price:3000, dep:3000, wifi:false, wash:true, park:true, lat:56.770041, lon:60.585994},
+    {id:17, d:'Вторчермет', addr:'Ляпустина 25', rooms:'1-комнатная', plan:'k1', m2:42, fl:14, fls:16,
+     beds:'2+2+2+2', sleeps:8, price:3500, dep:3000, wifi:true, wash:true, park:true, lat:56.764102, lon:60.596585},
+    {id:18, d:'Вторчермет', addr:'Ляпустина 25', rooms:'1-комнатная', plan:'k1', m2:42, fl:15, fls:16,
+     beds:'2+2+2+2', sleeps:8, price:3500, dep:3000, wifi:true, wash:true, park:true, lat:56.764102, lon:60.596585}
   ],
   bookings:[
     {id:100, apt:1, from:iso(addD(TODAY,-9)), to:iso(addD(TODAY,-7)), client:'cli', status:'done',
      dep:{amount:3000,status:'returned',deductions:[],surcharges:[]}},
     {id:101, apt:2, from:iso(addD(TODAY,-2)), to:iso(TODAY), client:'cli', status:'paid',
-     dep:{amount:5000,status:'held',deductions:[],surcharges:[]}},
-    {id:102, apt:4, from:iso(TODAY), to:iso(addD(TODAY,2)), client:null,
+     dep:{amount:3000,status:'held',deductions:[],surcharges:[]}},
+    {id:102, apt:12, from:iso(TODAY), to:iso(addD(TODAY,2)), client:null,
      guest:'Анна Березина · +7 963 210-44-55', status:'paid',
-     dep:{amount:5000,status:'held',deductions:[],surcharges:[]}},
-    {id:103, apt:3, from:iso(addD(TODAY,1)), to:iso(addD(TODAY,4)), client:null,
+     dep:{amount:3000,status:'held',deductions:[],surcharges:[]}},
+    {id:103, apt:5, from:iso(addD(TODAY,1)), to:iso(addD(TODAY,4)), client:null,
      guest:'Павел Гущин · +7 922 587-13-70', status:'pending',
      dep:{amount:3000,status:'none',deductions:[],surcharges:[]}}
   ],
   cleanTasks:[
     {id:1, apt:2, type:'После выезда', due:'сегодня до 14:00', status:'new', by:null,
      seenAt:null, doneAt:null, photos:0, booking:101},
-    {id:2, apt:4, type:'Подготовка к заезду', due:'вчера до 13:00', status:'done', by:'cl2',
+    {id:2, apt:12, type:'Подготовка к заезду', due:'вчера до 13:00', status:'done', by:'cl2',
      seenAt:'вчера 09:40', doneAt:'вчера 12:15', photos:4, booking:102}
   ],
   repairs:[
-    {id:1, apt:6, desc:'Течёт смеситель на кухне, нужна замена картриджа', status:'in-progress',
+    {id:1, apt:15, desc:'Течёт смеситель на кухне, нужна замена картриджа', status:'in-progress',
      by:'rp1', cost:null, block:true, created:'вчера 18:20'}
   ],
   calls:[
     {id:1, t:'07:31', num:'+7 950 118-24-60', to:'Администратор', off:true, st:'Принят · 1:12',
      note:'Вопрос о раннем заезде'},
     {id:2, t:'09:12', num:'+7 922 587-13-70', to:'Марина Ковалёва', st:'Принят · 2:40',
-     note:'Шаманова 24, '+fmtD(iso(addD(TODAY,1)))+'–'+fmtD(iso(addD(TODAY,4))), booking:103},
+     note:'Ландау 38, '+fmtD(iso(addD(TODAY,1)))+'–'+fmtD(iso(addD(TODAY,4))), booking:103},
     {id:3, t:'10:05', num:'+7 909 331-90-12', to:'Марина Ковалёва', st:'Пропущен', miss:true,
      note:'Перезвонить'}
   ],
@@ -760,11 +835,11 @@ const DB = {
     ]
   },
   notifs:[
-    {to:'admin', text:'Сегодня выезд из Краснолесья, 97 (бронь №101). Создана задача уборки.', t:'08:00', unread:true},
-    {to:'cleaner', text:'Новая задача: уборка после выезда — Краснолесья, 97, сегодня до 14:00.', t:'08:00', unread:true},
+    {to:'admin', text:'Сегодня выезд из Парина 43 (бронь №101). Создана задача уборки.', t:'08:00', unread:true},
+    {to:'cleaner', text:'Новая задача: уборка после выезда — Парина 43, сегодня до 14:00.', t:'08:00', unread:true},
     {to:'client', text:'Чек по брони №101 доступен в разделе «Документы».', t:fmtD(iso(addD(TODAY,-2)))+' 14:22', unread:false},
-    {to:'manager', text:'Бронь №103 (Шаманова, 24) ожидает оплаты гостем.', t:'09:15', unread:true},
-    {to:'repair', text:'Заявка: течёт смеситель — Селькоровская, 76. Квартира снята с продажи.', t:'вчера 18:20', unread:true}
+    {to:'manager', text:'Бронь №103 (Ландау, 38) ожидает оплаты гостем.', t:'09:15', unread:true},
+    {to:'repair', text:'Заявка: течёт смеситель — Симферопольская 31. Квартира снята с продажи.', t:'вчера 18:20', unread:true}
   ],
   seq:{booking:104, doc:5, pay:5, task:3}
 };
@@ -804,15 +879,23 @@ function toast(msg){
 }
 const roleNotifKey = ()=>({client:'client',manager:'manager',cleaner:'cleaner',repair:'repair',admin:'admin'}[S.role]);
 
-/* маршрутизация звонков */
-function routeFor(dayIdx, time){
+/* Маршрутизация звонков: приём круглосуточный, цель определяется сменой 2 через 2.
+   Резерв — владелец: если на смену никто не назначен или менеджер не ответил. */
+function shiftOn(dateISO){
   const s=DB.settings;
-  const inWork = time>=s.workFrom && time<s.workTo;
-  const mid = s.days[dayIdx];
-  if(inWork && mid) return {who:DB.users[mid].name, role:'менеджер', phone:DB.users[mid].phone, work:true, mid};
-  return {who:DB.users.admin.name, role:'администратор', phone:DB.users.admin.phone, work:false, mid:null};
+  const days=Math.floor((P(dateISO)-P(s.shiftAnchor))/864e5);
+  const idx=Math.floor(((days%(s.shiftPattern*2))+(s.shiftPattern*2))%(s.shiftPattern*2)/s.shiftPattern);
+  return idx===0 ? 'm1' : 'm2';
 }
-const routeNow = ()=>routeFor(dow1(new Date()), nowT());
+function routeFor(dateISO, time){
+  const s=DB.settings;
+  const mid=shiftOn(dateISO);
+  if(mid && DB.users[mid]) return {who:DB.users[mid].name, role:'менеджер на смене',
+    phone:DB.users[mid].phone, work:true, mid, at:time};
+  return {who:DB.users.admin.name, role:'владелец, резерв', phone:DB.users.admin.phone,
+    work:false, mid:null, at:time};
+}
+const routeNow = ()=>routeFor(iso(new Date()), nowT());
 
 /* состояние квартиры для пульта */
 function aptState(a){
@@ -901,13 +984,55 @@ function bellToggle(){
   if(S.bellOpen) setTimeout(()=>{ DB.notifs.forEach(n=>{ if(n.to===roleNotifKey()) n.unread=false; }); },1400);
 }
 
-/* ============ КАРТА: блёклая уличная сеть двух районов ============ */
-const MAP_W=1200, MAP_H=520;
+/* ============ КАРТА: реальные координаты объектов ============ */
+const MAP_W=1200, MAP_H=560;
+/* Равнопромежуточная проекция с поправкой на широту: относительное положение
+   меток соответствует действительности. Уличная сетка под ними — декоративная фактура. */
+const GEO = (()=>{
+  const A=DB.apartments, lat0=A.reduce((s,a)=>s+a.lat,0)/A.length;
+  const k=Math.cos(lat0*Math.PI/180);
+  const xs=A.map(a=>a.lon*k), ys=A.map(a=>-a.lat);
+  const pad=0.14;
+  let x0=Math.min(...xs), x1=Math.max(...xs), y0=Math.min(...ys), y1=Math.max(...ys);
+  const dx=(x1-x0)*pad, dy=(y1-y0)*pad;
+  x0-=dx; x1+=dx; y0-=dy*2.2; y1+=dy*2.2;
+  const sc=Math.min(MAP_W/(x1-x0), MAP_H/(y1-y0));
+  const ox=(MAP_W-(x1-x0)*sc)/2, oy=(MAP_H-(y1-y0)*sc)/2;
+  return {k, to:(lat,lon)=>[ (lon*k-x0)*sc+ox, (-lat-y0)*sc+oy ]};
+})();
+/* Разводим близкие метки: дома в одном квартале дают наложение кружков.
+   Простая итеративная расталкивалка — сохраняет порядок и не зависит от случайности. */
+const MARK_XY = (()=>{
+  const R=52, pos={};
+  DB.apartments.forEach(a=>{ const [x,y]=GEO.to(a.lat,a.lon); pos[a.id]=[x,y]; });
+  const ids=DB.apartments.map(a=>a.id);
+  for(let iter=0; iter<220; iter++){
+    let moved=false;
+    for(let i=0;i<ids.length;i++) for(let j=i+1;j<ids.length;j++){
+      const A=pos[ids[i]], B=pos[ids[j]];
+      let dx=B[0]-A[0], dy=B[1]-A[1];
+      let d=Math.hypot(dx,dy);
+      if(d<0.001){ dx=Math.cos(i*2.4); dy=Math.sin(i*2.4); d=1; }
+      if(d<R){
+        const push=(R-d)/2/d;
+        A[0]-=dx*push; A[1]-=dy*push; B[0]+=dx*push; B[1]+=dy*push;
+        moved=true;
+      }
+    }
+    if(!moved) break;
+  }
+  const M=30;
+  ids.forEach(id=>{ pos[id][0]=Math.max(M,Math.min(MAP_W-M,pos[id][0]));
+                    pos[id][1]=Math.max(M,Math.min(MAP_H-M-14,pos[id][1])); });
+  return pos;
+})();
+const mapXY = a => MARK_XY[a.id];
+
 let _cityCache=null;
 function cityBase(){
   if(_cityCache) return _cityCache;
   let s=11; const rnd=()=>{s=(s*9301+49297)%233280;return s/233280;};
-  const L=[];  // [x1,y1,x2,y2,major]
+  const L=[];
   const grid=(cx,cy,w,h,step,rot,jit)=>{
     const c=Math.cos(rot), sn=Math.sin(rot);
     const T=(x,y)=>[cx+x*c-y*sn, cy+x*sn+y*c];
@@ -916,39 +1041,43 @@ function cityBase(){
     for(let y=-h/2;y<=h/2;y+=step){ const j=(rnd()-.5)*jit; const a=T(-w/2,y+j), b=T(w/2,y+j);
       L.push([...a,...b, Math.abs(y)<step*.6]); }
   };
-  grid(300,275,520,420,46,-0.12,10);   // Академический
-  grid(915,290,540,420,52,0.16,12);    // Вторчермет
-  // мелкая застройка по краям для фактуры
-  for(let i=0;i<70;i++){ const x=rnd()*MAP_W, y=rnd()*MAP_H, a=rnd()*3.14, l=30+rnd()*90;
+  /* центроид района — по его же объектам, поэтому подписи стоят там, где реально стоят дома */
+  const cent={};
+  DB.apartments.forEach(a=>{ const [x,y]=GEO.to(a.lat,a.lon);
+    (cent[a.d]=cent[a.d]||{x:0,y:0,n:0}); cent[a.d].x+=x; cent[a.d].y+=y; cent[a.d].n++; });
+  Object.values(cent).forEach(c=>{ c.x/=c.n; c.y/=c.n; });
+  grid(cent['Академический'].x, cent['Академический'].y, 420, 400, 44, -0.10, 9);
+  grid(cent['Вторчермет'].x,    cent['Вторчермет'].y,    380, 380, 48,  0.14, 11);
+  grid(cent['Уктус'].x,         cent['Уктус'].y,         300, 330, 52,  0.05, 10);
+  grid(cent['Мичуринский'].x,   cent['Мичуринский'].y,   210, 210, 46, -0.18, 8);
+  for(let i=0;i<60;i++){ const x=rnd()*MAP_W, y=rnd()*MAP_H, a=rnd()*3.14, l=30+rnd()*90;
     L.push([x,y,x+Math.cos(a)*l,y+Math.sin(a)*l,false]); }
   const lines=L.map(([x1,y1,x2,y2,m])=>`<path d="M${x1.toFixed(0)} ${y1.toFixed(0)}L${x2.toFixed(0)} ${y2.toFixed(0)}" class="${m?'rd-major':'rd'}"/>`).join('');
-  const arterials=`<path class="rd-art" d="M-20 400 C220 380 420 330 620 300 S1000 240 1230 210"/>
-    <path class="rd-art" d="M560 -20 C590 120 610 260 640 540"/>
-    <path class="rd-art" d="M-20 130 C240 150 470 120 700 140 S1050 170 1230 150"/>`;
-  const park=`<path d="M545 0 C585 90 535 180 585 270 C625 340 590 420 615 520 L700 520 C670 420 705 320 665 230 C640 150 660 60 650 0 Z" fill="#E3E7DF"/>`;
+  const arterials=`<path class="rd-art" d="M-20 ${MAP_H*.74} C260 ${MAP_H*.70} 520 ${MAP_H*.60} 780 ${MAP_H*.52} S1080 ${MAP_H*.40} 1230 ${MAP_H*.36}"/>
+    <path class="rd-art" d="M${MAP_W*.42} -20 C${MAP_W*.45} ${MAP_H*.30} ${MAP_W*.47} ${MAP_H*.60} ${MAP_W*.50} ${MAP_H+20}"/>
+    <path class="rd-art" d="M-20 ${MAP_H*.28} C280 ${MAP_H*.32} 560 ${MAP_H*.22} 840 ${MAP_H*.26} S1120 ${MAP_H*.30} 1230 ${MAP_H*.24}"/>`;
+  /* Юго-Западный лесопарк — между Академическим и Вторчерметом */
+  const px=(cent['Академический'].x+cent['Вторчермет'].x)/2;
+  const park=`<path d="M${px-46} -20 C${px-10} 120 ${px-58} 230 ${px-16} 330 C${px+20} 410 ${px-8} 480 ${px+12} ${MAP_H+20}
+    L${px+96} ${MAP_H+20} C${px+70} 470 ${px+104} 380 ${px+74} 280 C${px+52} 190 ${px+74} 90 ${px+62} -20 Z" fill="#E3E7DF"/>`;
+  const lbl=(d,dx,dy,cls)=>`<text x="${(cent[d].x+dx).toFixed(0)}" y="${(cent[d].y+dy).toFixed(0)}" class="${cls||''}">${d}</text>`;
   const labels=`<g class="mlbl">
-    <text x="112" y="86">Широкая Речка</text><text x="188" y="452">Краснолесье</text>
-    <text x="392" y="112">УНЦ</text><text x="60" y="300">Академический</text>
-    <text x="586" y="470" transform="rotate(-82 586 470)">Юго-Западный лесопарк</text>
-    <text x="820" y="92">Ботаника</text><text x="1040" y="450">Уктус</text>
-    <text x="1080" y="130">Автовокзал Южный</text><text x="760" y="470">Вторчермет</text>
-    <text x="300" y="330" class="mst">Краснолесья</text><text x="330" y="196" class="mst">Вильгельма де Геннина</text>
-    <text x="880" y="322" class="mst">Агрономическая</text><text x="905" y="420" class="mst">Селькоровская</text>
-    <text x="826" y="230" class="mst" transform="rotate(80 826 230)">Титова</text>
+    <text x="${px+24}" y="${MAP_H*.86}" transform="rotate(-82 ${px+24} ${MAP_H*.86})">Юго-Западный лесопарк</text>
+    <text x="40" y="42">Широкая Речка</text><text x="${MAP_W-40}" y="${MAP_H-28}" text-anchor="end">Елизавет</text>
+    <text x="${MAP_W-40}" y="46" text-anchor="end">Ботаника</text>
+    <text x="40" y="${MAP_H-24}">Краснолесье</text>
   </g>
-  <g class="mdist"><text x="60" y="470">АКАДЕМИЧЕСКИЙ</text><text x="1140" y="56" text-anchor="end">ВТОРЧЕРМЕТ</text></g>`;
+  <g class="mdist">
+    ${lbl('Академический',-6,-96)}${lbl('Вторчермет',10,96)}${lbl('Уктус',0,-78)}${lbl('Мичуринский',0,-62)}
+  </g>`;
   _cityCache=`<rect width="${MAP_W}" height="${MAP_H}" fill="#EBEBE8"/>${park}
     <g class="rd-casing">${lines}${arterials}</g><g class="rd-fill">${lines}${arterials}</g>${labels}`;
   return _cityCache;
 }
-const mapXY = a => [a.x*2, a.y*1.3];
 
 function districtMap(interactive, featuredId){
   const {from,to,district}=S.search;
-  const shownId = interactive ? S.selApt : (featuredId||4);
-  const vb = interactive ? '120 70 990 440' : '0 0 '+MAP_W+' '+MAP_H;
-  const par = interactive ? 'xMidYMid meet' : 'xMidYMid slice';
-  const ms = interactive ? 1.5 : 1;
+  const shownId = interactive ? S.selApt : (featuredId||12);
   const marks = DB.apartments.map(a=>{
     const [mx,my]=mapXY(a);
     const vis = !interactive || district==='all' || a.d===district;
@@ -956,15 +1085,15 @@ function districtMap(interactive, featuredId){
     const cls = (free?'':'busy') + (shownId===a.id?' sel':'');
     const why = free ? 'свободна на выбранные даты'
       : !vis ? 'другой район, вне текущего фильтра' : 'занята на выбранные даты';
-    return `<g class="mk ${cls}" transform="translate(${mx} ${my}) scale(${ms})" ${interactive?`onclick="selectApt(${a.id})" tabindex="0" role="button"
+    return `<g class="mk ${cls}" transform="translate(${mx.toFixed(1)} ${my.toFixed(1)}) scale(${interactive?1.15:1})" ${interactive?`onclick="selectApt(${a.id})" tabindex="0" role="button"
       aria-label="${esc(a.addr)}, ${esc(a.d)}, ${RUB(a.price)} за сутки — ${why}"
       onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectApt(${a.id})}"`:''}>
-      <circle r="25" fill="#fff" filter="url(#mkSh)"/>
-      <clipPath id="mc${a.id}"><circle r="21"/></clipPath>
-      <g clip-path="url(#mc${a.id})"><rect x="-32" y="-22" width="64" height="45" fill="#F4F4F2"/>
-        <g transform="translate(-32 -22.4) scale(.32)">${contours(200,140,a.id*17+3)}${planCore(PLANS[a.plan],{strong:true,numbers:false})}</g></g>
-      <circle r="21" fill="none" stroke="#fff" stroke-width="2.6"/>
-      <text class="mkp" y="40" text-anchor="middle">${(a.price/1000).toFixed(1).replace('.',',')} т₽</text>
+      <circle r="22" fill="#fff" filter="url(#mkSh)"/>
+      <clipPath id="mc${a.id}"><circle r="18.5"/></clipPath>
+      <g clip-path="url(#mc${a.id})"><rect x="-28" y="-19" width="56" height="40" fill="#F4F4F2"/>
+        <g transform="translate(-28 -19.6) scale(.28)">${contours(200,140,a.id*17+3)}${planCore(PLANS[a.plan],{strong:true,numbers:false})}</g></g>
+      <circle r="18.5" fill="none" stroke="#fff" stroke-width="2.4"/>
+      <text class="mkp" y="36" text-anchor="middle">${(a.price/1000).toFixed(1).replace('.',',')} т₽</text>
     </g>`;
   }).join('');
 
@@ -972,13 +1101,13 @@ function districtMap(interactive, featuredId){
   const selFree = sel ? (!interactive || isFree(sel.id,from,to)) : false;
   const card = sel ? `<div class="mapcard">
       <div class="pic">${planSVG(sel,'','card')}
-        <span class="flag">${interactive ? (selFree?'Свободна':'Занята') : 'Новая'}</span></div>
+        <span class="flag">${interactive ? (selFree?'Свободна':'Занята') : esc(sel.d)}</span></div>
       <div class="in">
-        <h4>${esc(sel.rooms.split('·')[0].trim())} · ${esc(sel.addr)}</h4>
+        <h4>${esc(sel.rooms)} · ${esc(sel.addr)}</h4>
         <div class="loc">${ic('pin',12)}${esc(sel.d)}, Екатеринбург</div>
         <div class="specs">
           <span>${ic('area',12)}${sel.m2} м²</span>
-          <span>${ic('bed',12)}до ${sel.sleeps} гостей</span>
+          <span>${ic('bed',12)}${sel.sleeps} мест</span>
           <span>${ic('shield',12)}залог ${(sel.dep/1000)} т₽</span>
         </div>
         <div class="foot2">
@@ -990,8 +1119,9 @@ function districtMap(interactive, featuredId){
     <div class="mappin" aria-hidden="true">${sel.id}</div>` : '';
 
   return `<div class="mapwrap" id="map"><div class="mapbox">
-    <svg class="plot" viewBox="${vb}" role="img" preserveAspectRatio="${par}"
-      aria-label="Карта юго-запада Екатеринбурга: квартиры в Академическом и на Вторчермете">
+    <svg class="plot" viewBox="0 0 ${MAP_W} ${MAP_H}" role="img"
+      preserveAspectRatio="${interactive?'xMidYMid meet':'xMidYMid slice'}"
+      aria-label="Карта Екатеринбурга: ${DB.apartments.length} квартир в районах ${Object.keys(DISTRICTS).join(', ')}">
       <defs><filter id="mkSh" x="-40%" y="-40%" width="180%" height="180%">
         <feDropShadow dx="0" dy="3" stdDeviation="3.5" flood-color="#17171C" flood-opacity=".22"/></filter></defs>
       ${PLAN_DEFS}${cityBase()}${marks}
@@ -1001,7 +1131,7 @@ function districtMap(interactive, featuredId){
   ${interactive?`<div class="legend">
     <span><i style="background:#17171C"></i>свободна на даты</span>
     <span><i style="background:#C0C0B7"></i>занята или вне района</span>
-    <span>${DB.apartments.length} квартир · 2 района</span>
+    <span>${DB.apartments.length} квартир · ${Object.keys(DISTRICTS).length} района</span>
     <span style="margin-left:auto">Нажмите метку, чтобы открыть карточку</span></div>`:''}
   </div>`;
 }
@@ -1013,10 +1143,11 @@ function vLanding(){
   return `
   <section class="hero">
     <a class="eyebrow" href="#about" onclick="event.preventDefault();document.getElementById('about').scrollIntoView({behavior:'smooth'})">
-      <i>${ic('key',11)}</i>Что такое Ключи24?</a>
-    <h1>Снимите квартиру на сутки <br>и заселитесь<span class="thumb">${planSVG(DB.apartments[3],'','cover')}</span><b>за 15 минут</b></h1>
-    <p class="lead">Шесть собственных квартир в Академическом и на Вторчермете. Выбираете даты,
-    платите онлайн — код от двери приходит в личный кабинет, <em>залог возвращается в день выезда</em>.</p>
+      <i>${ic('key',11)}</i>Сдаём квартиры с ${s.since} года</a>
+    <h1>Снимите квартиру на сутки <br>и заселитесь<span class="thumb">${planSVG(DB.apartments[11],'','cover')}</span><b>по коду</b></h1>
+    <p class="lead">${DB.apartments.length} квартир в четырёх районах Екатеринбурга: Академический,
+    Мичуринский, Уктус и Вторчермет. Выбираете даты, платите онлайн — код от кейбокса приходит
+    в личный кабинет, <em>отчётные документы выдаём сразу</em>.</p>
 
     <form class="searchbar" onsubmit="event.preventDefault();heroSearch()">
       <div class="seg"><label for="hd">Район</label>
@@ -1037,30 +1168,32 @@ function vLanding(){
   <div class="stats"><div class="stats-in">
     <div><b>от ${minPrice.toLocaleString('ru-RU')} ₽</b><span>за сутки<br>без комиссий</span></div>
     <div><b>${DB.apartments.length}</b><span>квартир<br>в управлении</span></div>
-    <div><b>15 мин</b><span>от оплаты<br>до заселения</span></div>
-    <div><b>${s.workFrom.slice(0,2)}—${s.workTo.slice(0,2)}</b><span>приём<br>звонков</span></div>
+    <div><b>${s.guestsServed}</b><span>гостей<br>с ${s.since} года</span></div>
+    <div><b>24/7</b><span>приём<br>звонков</span></div>
   </div></div>
 
   <section class="sect" id="about">
     <div class="duo">
       <div>
         <div class="sect-lbl">– Почему мы</div>
-        <h2>Не агрегатор,<br>а <b>хозяин каждой<br>квартиры</b></h2>
-        <p class="say">Мы не сводим вас с чужими собственниками. Все шесть квартир наши: сами убираем,
-        сами чиним, сами отвечаем на звонок. Схема на сайте совпадает с тем, что за дверью,
-        а залог возвращается по факту проверки.</p>
+        <h2>Всегда заселим,<br>даже если <b>всё<br>занято</b></h2>
+        <p class="say">Держим ${DB.apartments.length} квартир в четырёх районах, поэтому почти всегда
+        находим замену, если выбранная занята. Работаем с ${s.since} года, приняли ${s.guestsServed} гостей.
+        Отчётные документы выдаём сразу — с ними не спорит ни одна бухгалтерия.</p>
         <button class="btn" onclick="openAuth('up')">Подобрать квартиру${ic('chev',12)}</button>
       </div>
       <div class="fcards">
         <div class="fcard">
-          <div class="fakein">${ic('search',13)}<span>Заезд 12.04 — выезд 15.04</span></div>
-          <h3>Только свободные даты</h3>
-          <p>Календарь занятости общий для сайта и менеджеров. Забронировать занятое нельзя даже по телефону.</p>
+          <div class="itile">${ic('doc',21)}</div>
+          <h3>Отчётные документы</h3>
+          <p>Кассовый чек сразу после оплаты, акт и счёт на организацию — по запросу.
+          Командировочному не придётся ничего выпрашивать.</p>
         </div>
         <div class="fcard">
           <div class="itile">${ic('shield',21)}</div>
-          <h3>Залог возвращаем</h3>
-          <p>Удержим только за реальный ущерб, покажем акт с фотографиями и объясним в чате.</p>
+          <h3>Залог ${RUB(s.depositDefault)}, возвращаем</h3>
+          <p>Удержим только за реальный ущерб, покажем акт с фотографиями и объясним в чате.
+          При отмене за сутки возвращаем ${s.refundShare}&nbsp;% стоимости.</p>
         </div>
         <div class="fcard wide">
           <div class="wide-art">
@@ -1076,9 +1209,9 @@ function vLanding(){
                 <div class="sc-cap"><b>Селькоровская, 76</b><span>Вторчермет · 76 м²</span></div></div>
             </div>
           </div>
-          <h3>Два района под две причины приезда</h3>
-          <p>Академический — новые дома и закрытые дворы, двадцать минут до центра.
-          Вторчермет — Южный автовокзал и промплощадки, куда обычно и едут в командировку.</p>
+          <h3>Четыре района под разные причины приезда</h3>
+          <p>Академический и Мичуринский — новые кварталы и закрытые дворы. Вторчермет — рядом
+          Южный автовокзал и промплощадки. Уктус — юго-восток, горнолыжный комплекс и Ботаника.</p>
         </div>
       </div>
     </div>
@@ -1091,11 +1224,11 @@ function vLanding(){
       <div class="step"><div class="n">1</div><h3>Выберите даты</h3>
         <p>Карта покажет только те квартиры, что свободны на ваш период.</p></div>
       <div class="step"><div class="n">2</div><h3>Оплатите онлайн</h3>
-        <p>Картой или через СБП, одним платежом: проживание и возвратный залог.</p></div>
+        <p>Картой или через СБП, одним платежом: проживание и возвратный залог ${RUB(s.depositDefault)}.</p></div>
       <div class="step"><div class="n">3</div><h3>Получите код</h3>
-        <p>Код от кейбокса придёт в кабинет в день заезда до 13:00.</p></div>
+        <p>Код от кейбокса приходит в личный кабинет. Ключи во всех квартирах — в кейбоксе у двери.</p></div>
       <div class="step"><div class="n">4</div><h3>Заберите залог</h3>
-        <p>После уборки и проверки деньги уходят обратно тем же способом.</p></div>
+        <p>После уборки и проверки квартиры деньги уходят обратно тем же способом.</p></div>
     </div>
   </section>
 
@@ -1121,10 +1254,11 @@ function vLanding(){
   </section>
 
   <footer><div class="foot">
-    <div><b>Ключи24</b>ИП Ключников А.В.<br>г. Екатеринбург, Академический и Вторчермет</div>
-    <div><b>Связь</b><a href="tel:+73432900024">${s.mainPhone}</a><br>
-      Приём звонков ежедневно ${s.workFrom}—${s.workTo}</div>
-    <div><b>Оплата</b>ЮKassa: карты и СБП<br>Кассовые чеки по 54-ФЗ</div>
+    <div><b>Ключи24</b>${s.legal.name}<br>ИНН ${s.legal.inn} · ОГРНИП ${s.legal.ogrnip}<br>
+      г. Екатеринбург</div>
+    <div><b>Связь</b><a href="tel:${s.mainPhone.replace(/[^+\d]/g,'')}">${s.mainPhone}</a><br>
+      <a href="mailto:${s.email}">${s.email}</a><br>Приём звонков круглосуточно</div>
+    <div><b>Оплата</b>Карты и СБП<br>Кассовый чек по 54-ФЗ после каждой оплаты</div>
     <div><b>Это прототип</b>Демонстрация интерфейса. Оплата, SMS и телефония эмулируются,
       реквизиты и данные вымышленные.</div>
   </div></footer>`;
@@ -1188,13 +1322,14 @@ function cSearch(){
       <div>
         <span class="dst">${ic('pin',13)}${esc(a.d)}</span>
         <h4>${esc(a.addr)}</h4>
-        <div class="meta">${esc(a.rooms)} · до ${a.sleeps} гостей · залог ${RUB(a.dep)}</div>
+        <div class="meta">${esc(a.rooms)} · ${a.m2} м² · ${a.fl}/${a.fls} этаж · ${a.sleeps} мест
+          ${a.wifi?' · Wi-Fi':''} · залог ${RUB(a.dep)}</div>
         <div class="mt">${ok?'<span class="tag ok">Свободна на ваши даты</span>'
           :'<span class="tag gray">Занята на эти даты</span>'}</div>
       </div>
       <div class="price">
         <b>${RUB(a.price)}</b>
-        <span>за сутки · ${RUB(a.price*n)} за ${n} ${nightWord(n)}</span>
+        <span>за сутки · ${RUB(stayCost(a,from,to).sum)} за ${n} ${nightWord(n)}</span>
         <button class="btn sm" ${ok?'':'disabled'}
           onclick="event.stopPropagation();openBooking(${a.id})">Забронировать</button>
       </div>
@@ -1230,23 +1365,29 @@ function cSearch(){
 /* ---- бронирование и оплата ---- */
 function openBooking(aptId){
   const a=apt(aptId); const {from,to}=S.search; const n=nights(from,to);
-  const stay=a.price*n, total=stay+a.dep;
+  const c=stayCost(a,from,to); const total=c.sum+a.dep;
+  const st=DB.settings;
   modal(`<div class="m-hd"><h3>Бронирование</h3>
     <button class="x" onclick="closeModal()" aria-label="Закрыть">${ic('close',18)}</button></div>
   <div class="m-bd">
     <div class="row" style="gap:14px;flex-wrap:nowrap;align-items:flex-start;margin-bottom:16px">
-      <div style="width:132px;flex-shrink:0">${planSVG(a)}</div>
-      <div><span class="dst" style="color:var(--ink-3);font-size:11.5px;font-weight:700">${esc(a.d)}</span>
+      <div style="width:132px;flex-shrink:0">${planSVG(a,'','card')}</div>
+      <div><span style="color:var(--ink-3);font-size:11.5px;font-weight:500">${esc(a.d)}</span>
         <h3 style="font-size:20px;margin:4px 0 5px">${esc(a.addr)}</h3>
-        <div class="hint">${esc(a.rooms)} · до ${a.sleeps} гостей</div></div>
+        <div class="hint">${esc(a.rooms)} · ${a.m2} м² · ${a.fl}/${a.fls} этаж<br>
+        Спальные места: ${esc(a.beds)} — всего ${a.sleeps}</div></div>
     </div>
     <div class="kv"><span>Даты</span><b>${fmtD(from)} — ${fmtD(to)} · ${n} ${nightWord(n)}</b></div>
-    <div class="kv"><span>Проживание, ${n} × ${RUB(a.price)}</span><b>${RUB(stay)}</b></div>
+    ${c.base?`<div class="kv"><span>Будние ночи, ${c.base} × ${RUB(a.price)}</span><b>${RUB(c.base*a.price)}</b></div>`:''}
+    ${c.up?`<div class="kv"><span>Выходные и праздники, ${c.up} × ${RUB(a.price+st.weekendUp)}</span>
+      <b>${RUB(c.up*(a.price+st.weekendUp))}</b></div>`:''}
     <div class="kv"><span>Возвратный залог</span><b>${RUB(a.dep)}</b></div>
     <div class="kv" style="border-top:1px solid var(--line);border-bottom:none;margin-top:10px;padding-top:14px;font-size:17px">
       <span><b>К оплате сейчас</b></span><b style="font-size:24px;letter-spacing:-.035em">${RUB(total)}</b></div>
     <p class="hint" style="margin:10px 0 16px">Залог возвращается тем же способом оплаты после проверки
-    квартиры уборщицей в день выезда. Если ущерба нет — возврат полный.</p>
+    квартиры. При отмене не позднее чем за сутки возвращаем ${st.refundShare}&nbsp;% стоимости проживания.
+    Доплаты: ${RUB(st.extraGuest)} за третьего и каждого следующего гостя, поздний выезд —
+    ${RUB(st.lateOutHour)} за час.</p>
     <button class="btn big" style="width:100%"
       onclick="openPay(${total},'Оплата брони · ${esc(a.addr)}',()=>finishBooking(${aptId}))">Перейти к оплате</button>
   </div>`);
@@ -1291,8 +1432,8 @@ function payDone(amount){
   if(payCb){ const cb=payCb; payCb=null; cb(); }
 }
 function finishBooking(aptId){
-  const a=apt(aptId); const {from,to}=S.search; const n=nights(from,to);
-  const sum=a.price*n+a.dep; const id=DB.seq.booking++;
+  const a=apt(aptId); const {from,to}=S.search;
+  const sum=stayCost(a,from,to).sum+a.dep; const id=DB.seq.booking++;
   DB.bookings.push({id, apt:aptId, from, to, client:'cli', status:'paid',
     dep:{amount:a.dep,status:'held',deductions:[],surcharges:[]}});
   DB.payments.unshift({id:DB.seq.pay++, d:fmtDY(iso(TODAY)), type:'Оплата брони №'+id, amount:sum,
@@ -1422,7 +1563,8 @@ function openDoc(id){
     <div class="docv">
       <div class="row" style="justify-content:space-between;align-items:flex-start;gap:14px">
         <div><h4>${esc(d.title)}</h4>
-          <div class="hint">ИП Ключников Артём Викторович · ИНН 66••••••••77 · г. Екатеринбург</div></div>
+          <div class="hint">${DB.settings.legal.name} · ИНН ${DB.settings.legal.inn} ·
+            ОГРНИП ${DB.settings.legal.ogrnip} · г. Екатеринбург</div></div>
         <span class="stamp">Образец</span>
       </div>
       <div class="sep"></div>
@@ -1434,7 +1576,8 @@ function openDoc(id){
       <div class="kv" style="border-bottom:none"><span><b>Итого</b></span>
         <b style="font-size:23px;letter-spacing:-.035em">${RUB(d.sum)}</b></div>
       <div class="hint" style="margin-top:10px;border-top:1px solid var(--line);padding-top:10px">
-        ФД 00${d.id}84 · ФН 99••••••01 · ОФД «Такском». Реквизиты вымышленные.</div>
+        Налоговый режим: ${DB.settings.legal.tax}. Фискальные реквизиты появятся после
+        регистрации кассы в ФНС — в прототипе не заполняются.</div>
     </div>
     <div class="row mt">
       <button class="btn ghost sm" onclick="toast('В боевой версии откроется PDF-файл')">${ic('down',15)}Скачать PDF</button>
@@ -1449,17 +1592,17 @@ function vManager(){
   return mShift();
 }
 function shiftWeek(editable){
-  const s=DB.settings; const td=dow1(new Date());
-  return `<div class="shiftgrid">${[1,2,3,4,5,6,7].map(d=>`
-    <div class="d ${d>5?'wknd':''} ${d===td?'today':''}">
-      <b>${DOW[d-1]}${d===td?' · сегодня':''}</b>
-      ${editable?`<select aria-label="Смена ${DOW[d-1]}"
-        onchange="DB.settings.days[${d}]=this.value||null;render();toast('Смена ${DOW[d-1]}: правило переадресации переприменено (демонстрация)')">
-        <option value="m1" ${s.days[d]==='m1'?'selected':''}>Марина</option>
-        <option value="m2" ${s.days[d]==='m2'?'selected':''}>Олег</option>
-        <option value="" ${!s.days[d]?'selected':''}>— админ</option>
-      </select>`:`<span class="nm">${s.days[d]?esc(DB.users[s.days[d]].name.split(' ')[0]):'— админ'}</span>`}
-    </div>`).join('')}</div>`;
+  const s=DB.settings; const today=iso(new Date());
+  const days=[...Array(8)].map((_,i)=>iso(addD(new Date(),i)));
+  return `<div class="shiftgrid">${days.slice(0,7).map(ds=>{
+    const mid=shiftOn(ds), u=DB.users[mid], isT=ds===today;
+    return `<div class="d ${dow1(P(ds))>5?'wknd':''} ${isT?'today':''}">
+      <b>${DOW[dow1(P(ds))-1]} ${fmtD(ds)}${isT?' · сегодня':''}</b>
+      <span class="nm">${esc(u.name.replace('Менеджер смены ','Смена '))}</span>
+    </div>`;}).join('')}</div>
+  ${editable?`<p class="hint mt">Шаблон «${s.shiftPattern} через ${s.shiftPattern}» отсчитывается
+  от ${fmtDY(s.shiftAnchor)}. Приём звонков круглосуточный, поэтому маршрут определяет смена,
+  а не часы работы. Конкретный график заказчик ещё утверждает — возможен вариант 3 через 3.</p>`:''}`;
 }
 function callsTable(withAction){
   return `<div class="tscroll"><table class="t">
@@ -1476,13 +1619,14 @@ function callsTable(withAction){
     </tr>`).join('')}</tbody></table></div>`;
 }
 function mShift(){
-  const r=routeNow(); const s=DB.settings; const mine=r.work&&r.mid==='m1';
+  const r=routeNow(); const s=DB.settings; const mine=r.mid==='m1';
   return `<div class="wrap"><div class="grid" style="max-width:980px">
     <div class="routebar ${mine?'':'off'}">
       <span class="pulse"></span>
       <div><b>${mine ? 'Ваша смена: звонки с '+s.mainPhone+' идут на '+DB.users.m1.phone
         : 'Сейчас принимает '+esc(r.who)+' — '+r.role+', '+r.phone}</b>
-      <div class="sub">Рабочее время ${s.workFrom}—${s.workTo}. Вне его все вызовы уходят на мобильный администратора.</div></div>
+      <div class="sub">Приём круглосуточный. Маршрут определяет смена «${s.shiftPattern} через ${s.shiftPattern}»;
+      если менеджер не отвечает, вызов уходит владельцу.</div></div>
     </div>
     <div class="plate"><div class="hd"><h3>График смен на неделю</h3>
       <span class="hint">задаёт администратор</span></div>
@@ -1499,7 +1643,7 @@ function mgrNewBooking(phone){
     <div class="frow"><label for="nbG">Гость: имя и телефон</label>
       <input id="nbG" value="Гость · ${esc(phone||'+7 ')}"></div>
     <div class="frow"><label for="nbA">Квартира</label><select id="nbA">
-      ${DB.apartments.map(a=>`<option value="${a.id}">${esc(a.addr)} · ${esc(a.d)} · ${RUB(a.price)}/сут</option>`).join('')}
+      ${DB.apartments.map(a=>`<option value="${a.id}">${esc(a.addr)} · ${esc(a.d)} · ${esc(a.rooms)} · ${RUB(a.price)}/сут</option>`).join('')}
     </select></div>
     <div class="row" style="gap:12px;flex-wrap:nowrap">
       <div class="frow" style="flex:1"><label for="nbF">Заезд</label>
@@ -1526,7 +1670,7 @@ function mgrBookingApply(){
 }
 function markPaid(bid){
   const b=bk(bid); b.status='paid'; b.dep.status='held';
-  const a=apt(b.apt); const sum=a.price*nights(b.from,b.to)+a.dep;
+  const a=apt(b.apt); const sum=stayCost(a,b.from,b.to).sum+a.dep;
   DB.payments.unshift({id:DB.seq.pay++, d:fmtDY(iso(TODAY)), type:'Оплата брони №'+bid,
     amount:sum, method:'СБП · ЮKassa', dir:'+'});
   DB.docs.unshift({id:DB.seq.doc++, booking:bid, type:'Чек',
@@ -1591,8 +1735,8 @@ function vCleaner(){
   const open=DB.cleanTasks.filter(t=>t.status!=='done');
   const done=DB.cleanTasks.filter(t=>t.status==='done');
   return `<div class="wrap"><div class="grid" style="max-width:820px">
-    <div class="plate"><div class="hd"><h3>Мои задачи</h3>
-      <span class="hint">«Приняла» показывает администратору, что задачу увидели</span></div>
+    <div class="plate"><div class="hd"><h3>Свободные объекты</h3>
+      <span class="hint">горничная сама выбирает объект — как в рабочем чате</span></div>
       <div class="bd stack">${open.length?open.map(cleanRow).join('')
         :'<div class="empty">Открытых задач нет</div>'}</div></div>
     <div class="plate"><div class="hd"><h3>Выполнено</h3></div>
@@ -1602,11 +1746,11 @@ function vCleaner(){
 }
 function cleanRow(t){
   const a=apt(t.apt);
-  const st=t.status==='new'?'<span class="tag fix">Новая — подтвердите</span>'
-    :t.status==='seen'?'<span class="tag clean">Принята</span>'
+  const st=t.status==='new'?'<span class="tag fix">Свободна — можно взять</span>'
+    :t.status==='seen'?'<span class="tag clean">Взята: '+esc(DB.users[t.by].name)+'</span>'
     :t.status==='progress'?'<span class="tag busy">Убираетесь</span>'
     :'<span class="tag ok">Готово</span>';
-  const btn=t.status==='new'?`<button class="btn sm" onclick="taskSeen(${t.id})">${ic('check',15)}Приняла</button>`
+  const btn=t.status==='new'?`<button class="btn sm" onclick="taskSeen(${t.id})">${ic('check',15)}Беру объект</button>`
     :t.status==='seen'?`<button class="btn sm" onclick="taskStart(${t.id})">${ic('broom',15)}Начала уборку</button>`
     :t.status==='progress'?`<button class="btn ok sm" onclick="taskDone(${t.id})">${ic('check',15)}Готово + фото</button>`
     :`<span class="hint">${esc(t.doneAt||'')} · фото: ${t.photos}</span>`;
@@ -1619,8 +1763,8 @@ function cleanRow(t){
 }
 function taskSeen(id){
   const t=DB.cleanTasks.find(x=>x.id===id); t.status='seen'; t.by='cl1'; t.seenAt=nowT();
-  notify('admin','Уборка «'+apt(t.apt).addr+'»: '+DB.users.cl1.name+' приняла задачу');
-  render(); toast('Задача принята — администратор видит это на пульте');
+  notify('admin','Уборка «'+apt(t.apt).addr+'»: объект взяла '+DB.users.cl1.name);
+  render(); toast('Объект закреплён за вами — владелец видит это на пульте');
 }
 function taskStart(id){
   const t=DB.cleanTasks.find(x=>x.id===id); t.status='progress';
@@ -1709,15 +1853,15 @@ function aBoard(){
       </article>`;}).join('')}
     </div>
     <div class="plate" style="margin-top:var(--gut)"><div class="hd"><h3>Уборка — контроль</h3>
-      <span class="hint">видно, увидела ли уборщица задачу</span></div>
+      <span class="hint">видно, взял ли кто-то объект из пула</span></div>
       <div class="bd"><div class="tscroll"><table class="t">
-        <thead><tr><th>Квартира</th><th>Тип</th><th>Срок</th><th>Кто принял</th><th>Статус</th></tr></thead>
+        <thead><tr><th>Квартира</th><th>Тип</th><th>Срок</th><th>Кто взял</th><th>Статус</th></tr></thead>
         <tbody>${DB.cleanTasks.map(t=>`<tr>
           <td>${esc(apt(t.apt).addr)}</td><td>${esc(t.type)}</td><td>${esc(t.due)}</td>
-          <td>${t.status==='new'?'<b style="color:var(--alert)">не принята</b>'
+          <td>${t.status==='new'?'<b style="color:var(--alert)">никто не взял</b>'
             :esc(DB.users[t.by].name)+(t.seenAt?' · '+esc(t.seenAt):'')}</td>
-          <td>${t.status==='new'?'<span class="tag fix">Не принята</span>'
-            :t.status==='seen'?'<span class="tag clean">Принята</span>'
+          <td>${t.status==='new'?'<span class="tag fix">Свободна</span>'
+            :t.status==='seen'?'<span class="tag clean">Взята</span>'
             :t.status==='progress'?'<span class="tag busy">Идёт уборка</span>'
             :'<span class="tag ok">Готово · фото '+t.photos+'</span>'}</td>
         </tr>`).join('')}</tbody></table></div></div></div>
@@ -1729,29 +1873,27 @@ function aTel(){
   return `<div class="wrap"><div class="grid" style="max-width:1000px">
     <div class="routebar ${r.work?'':'off'}"><span class="pulse"></span>
       <div><b>${DOW[dow1(new Date())-1]}, ${nowT()} — звонки с ${s.mainPhone} идут на ${esc(r.who)}, ${r.phone}</b>
-      <div class="sub">${r.work?'Рабочее время, действует смена менеджера'
-        :'Нерабочее время — все вызовы на мобильный администратора'}</div></div></div>
+      <div class="sub">Приём круглосуточный · ${esc(r.role)}</div></div></div>
 
     <div class="two">
-      <div class="plate"><div class="hd"><h3>Рабочее время</h3></div><div class="bd">
-        <form onsubmit="event.preventDefault();saveTel()">
-          <div class="row" style="gap:12px;flex-wrap:nowrap">
-            <div class="frow" style="flex:1"><label for="wf">С</label><input type="time" id="wf" value="${s.workFrom}"></div>
-            <div class="frow" style="flex:1"><label for="wt">До</label><input type="time" id="wt" value="${s.workTo}"></div>
-          </div>
-          <p class="hint" style="margin-bottom:14px">Вне этого интервала облачная АТС переводит все вызовы
-          на ${DB.users.admin.phone} — мобильный администратора.</p>
-          <button class="btn" type="submit">Сохранить и применить в АТС</button>
-        </form>
+      <div class="plate"><div class="hd"><h3>Режим приёма</h3></div><div class="bd">
+        <div class="kv"><span>Приём звонков</span><b>круглосуточно</b></div>
+        <div class="kv"><span>Единый номер</span><b>${s.mainPhone} <span class="tag clean">выбор не сделан</span></b></div>
+        <div class="kv"><span>Смены</span><b>${s.shiftPattern} через ${s.shiftPattern}</b></div>
+        <div class="kv"><span>Резерв</span><b>${esc(DB.users.admin.name)}</b></div>
+        <p class="hint mt">Заказчик принимает звонки круглосуточно, поэтому правило «рабочие часы →
+        вне часов на администратора» заменено на дежурство по сменам. Сам график ещё утверждается:
+        рассматриваются 2 через 2 и 3 через 3.</p>
+        <p class="hint mt">Единый номер тоже не выбран: рассматривается личный номер владельца
+        с переадресацией либо отдельная рабочая SIM. Здесь временно показан первый рабочий номер.</p>
       </div></div>
       <div class="plate"><div class="hd"><h3>Проверить маршрут</h3>
         <span class="hint">куда попадёт звонок</span></div><div class="bd">
         <form onsubmit="event.preventDefault();routeCheck()">
           <div class="row" style="gap:12px;flex-wrap:nowrap">
-            <div class="frow" style="flex:1"><label for="ckD">День</label><select id="ckD">
-              ${DOW.map((d,i)=>`<option value="${i+1}" ${i+1===dow1(new Date())?'selected':''}>${d}</option>`).join('')}
-            </select></div>
-            <div class="frow" style="flex:1"><label for="ckT">Время</label><input type="time" id="ckT" value="10:30"></div>
+            <div class="frow" style="flex:1"><label for="ckD">Дата</label>
+              <input type="date" id="ckD" value="${iso(new Date())}"></div>
+            <div class="frow" style="flex:1"><label for="ckT">Время</label><input type="time" id="ckT" value="03:20"></div>
           </div>
           <button class="btn ghost" type="submit">Проверить</button>
         </form>
@@ -1770,18 +1912,13 @@ function aTel(){
       <div class="bd">${callsTable(false)}</div></div>
   </div></div>`;
 }
-function saveTel(){
-  const f=document.getElementById('wf').value, t=document.getElementById('wt').value;
-  if(!f||!t||t<=f){ toast('Время «до» должно быть позже времени «с»'); return; }
-  DB.settings.workFrom=f; DB.settings.workTo=t;
-  render(); toast('Рабочее время сохранено, сценарий АТС обновлён (демонстрация)');
-}
 function routeCheck(){
-  const d=+document.getElementById('ckD').value, t=document.getElementById('ckT').value;
+  const d=document.getElementById('ckD').value, t=document.getElementById('ckT').value;
+  if(!d){ toast('Укажите дату'); return; }
   const r=routeFor(d,t);
   document.getElementById('ckR').innerHTML =
-    `<div class="routebar ${r.work?'':'off'}" style="padding:12px 14px">
-      <div><b>${DOW[d-1]}, ${t} — ${esc(r.who)}</b>
+    `<div class="routebar" style="padding:12px 14px">
+      <div><b>${DOW[dow1(P(d))-1]} ${fmtD(d)}, ${t} — ${esc(r.who)}</b>
       <div class="sub">${r.role} · ${r.phone}</div></div></div>`;
 }
 
@@ -1898,8 +2035,10 @@ function aPay(){
       <tbody>${DB.payments.map(p=>`<tr><td>${p.d}</td><td>${esc(p.type)}</td><td>${esc(p.method)}</td>
         <td class="num" style="color:${p.dir==='+'?'var(--ok)':'var(--alert)'}">${p.dir} ${RUB(p.amount)}</td>
       </tr>`).join('')}</tbody></table></div>
-      <p class="hint mt">Получатель — расчётный счёт ИП администратора, подключённый к ЮKassa.
-      Чеки 54-ФЗ формируются автоматически при оплате, возврате и доначислении.</p>
+      <p class="hint mt">Получатель — бизнес-счёт ${DB.settings.legal.short} в ${DB.settings.legal.bank}.
+      Возвраты, удержания и доначисления проводит только владелец; менеджер видит факт оплаты,
+      но не имеет доступа к счёту. Чеки 54-ФЗ формируются автоматически при оплате,
+      возврате и доначислении.</p>
     </div></div></div>`;
 }
 
@@ -1935,13 +2074,15 @@ function aTeam(){
           <td>${DB.users.admin.phone}</td><td>вне рабочего времени</td></tr>
         ${staff.map(k=>{const u=DB.users[k];
           const sh=u.role==='Менеджер'
-            ? ([1,2,3,4,5,6,7].filter(d=>DB.settings.days[d]===k).map(d=>DOW[d-1]).join(', ')||'нет смен')
+            ? (k==='m1'?'смена А · '+DB.settings.shiftPattern+' через '+DB.settings.shiftPattern
+               :'смена Б · '+DB.settings.shiftPattern+' через '+DB.settings.shiftPattern)
             : 'по задачам';
           return `<tr><td><b>${esc(u.name)}</b></td><td>${esc(u.role)}</td>
             <td>${esc(u.phone)}</td><td>${sh}</td></tr>`;}).join('')}
       </tbody></table></div>
-      <p class="hint mt">Личный номер менеджера облачная АТС использует как цель переадресации в его смену.
-      Уборщиц и ремонтников может быть несколько — задачи берутся из общего пула.</p>
+      <p class="hint mt">Номер менеджера облачная АТС использует как цель переадресации в его смену.
+      Горничные сами разбирают объекты из общего пула — так процесс устроен у заказчика сейчас.
+      Поимённый состав команды заказчик ещё не передал, поэтому роли показаны обезличенно.</p>
     </div></div></div>`;
 }
 /* ============ АРХИТЕКТУРА И СЕБЕСТОИМОСТЬ ============ */
@@ -1966,6 +2107,19 @@ function vArch(){
     <div class="routebar"><span class="pulse"></span>
       <div><b>Это техническое приложение к прототипу, а не экран продукта</b>
       <div class="sub">Что придётся подключить в боевой версии и во сколько обойдётся владение.</div></div></div>
+
+    <div class="plate"><div class="hd">${ic('alert',18)}<h3>Чего ещё нет в данных заказчика</h3>
+      <span class="hint">блокирует запуск</span></div>
+      <div class="bd"><table class="ledger">
+        <thead><tr><th>Чего не хватает</th><th>Что нельзя без этого сделать</th></tr></thead><tbody>
+        <tr><td>Фотографии квартир</td><td>Главный продающий контент. Сейчас вместо фото — чертежи планировок</td></tr>
+        <tr><td>Реальные планировки (обмер или БТИ)</td><td>Чертежи нарисованы по комнатности и площади, но не по факту</td></tr>
+        <tr><td>Время заезда и выезда</td><td>Расчёт занятости и сроки задач уборки стоят условные</td></tr>
+        <tr><td>Правила проживания</td><td>Нужны для оферты и раздела правил: курение, животные, дети</td></tr>
+        <tr><td>Надбавка выходного дня и праздников</td><td>Механика цены сделана, сумма надбавки условная</td></tr>
+        <tr><td>Поимённый состав команды</td><td>Роли показаны обезличенно: «Смена А», «Горничная 1»</td></tr>
+        <tr><td>Синхронизация с Авито и Суточно.ру</td><td>Вопрос не задан. Если объявления там есть — нужен обмен календарями, иначе двойные брони</td></tr>
+      </tbody></table></div></div>
 
     <div class="cols3">
       ${blk('cloud','Ядро в Яндекс Облаке',`
@@ -2000,7 +2154,7 @@ function vArch(){
     </div>
 
     <div class="plate"><div class="hd"><h3>Себестоимость владения</h3>
-      <span class="hint">6 квартир, текущий объём звонков</span></div>
+      <span class="hint">${DB.apartments.length} квартир, круглосуточный приём звонков</span></div>
       <div class="bd"><div class="tscroll"><table class="t">
         <thead><tr><th>Статья</th><th>Сервис</th><th class="num">₽/мес</th></tr></thead>
         <tbody>${COSTS.map(c=>`<tr><td><b>${c[0]}</b></td><td>${c[1]}</td>
